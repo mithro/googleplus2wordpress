@@ -42,7 +42,6 @@ import pprint
 import sys
 import re
 
-
 import oembed
 from apiclient.discovery import build
 from oauth2client.file import Storage
@@ -287,7 +286,9 @@ def render_gallery(oid, obj, indent):
                                         'value' => $item->id,
                                 ),
 """
-
+# TODO Refactor
+from wordpress_xmlrpc import Client, WordPressPost
+from wordpress_xmlrpc.methods.posts import GetPosts, NewPost
 
 def main(argv):
   # Let the gflags module process the command-line arguments
@@ -312,7 +313,7 @@ def main(argv):
   http = credentials.authorize(http)
 
   service = build("plus", "v1", http=http)
-
+  wp = Client(WORDPRESS_XMLRPC_URI, WORDPRESS_USERNAME, WORDPRESS_PASSWORD)
   try:
     person = service.people().get(userId='me').execute(http)
 
@@ -324,7 +325,6 @@ def main(argv):
       activities_doc = request.execute()
       for item in sorted(activities_doc.get('items', []), key=lambda x: x["id"]):
 
-        print "="*80
         print 'ID: %-040s' % item['id']
 
         # Convert content to HTML so we can:
@@ -363,9 +363,14 @@ def main(argv):
 
         # else, original post
         else:
-            print "-"*80
-            print render_object(otype, item['id'], item['object'])
-            print "-"*80
+            content = render_object(otype, item['id'], item['object'])
+
+        post = WordPressPost()
+        post.title = title
+        post.content = content
+        #post.author = author
+        
+        wp.call(NewPost(post))
 
       request = service.activities().list_next(request, activities_doc)
 

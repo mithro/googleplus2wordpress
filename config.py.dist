@@ -1,1 +1,6 @@
 EMBEDLY_KEY = ''
+
+# TODO Make less constanty
+WORDPRESS_XMLRPC_URI = 'http://mysite.wordpress.com/xmlrpc.php'
+WORDPRESS_USERNAME = 'username'
+WORDPRESS_PASSWORD = 'password'
