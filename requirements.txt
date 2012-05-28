@@ -1,0 +1,5 @@
+google-api-python-client
+python-wordpress-xmlrpc
+python-oembed
+html2text
+nltk
