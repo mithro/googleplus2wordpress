@@ -313,19 +313,18 @@ def main(argv):
   http = credentials.authorize(http)
 
   service = build("plus", "v1", http=http)
-  wp = Client(WORDPRESS_XMLRPC_URI, WORDPRESS_USERNAME, WORDPRESS_PASSWORD)
+  wp = Client(config.WORDPRESS_XMLRPC_URI, config.WORDPRESS_USERNAME, config.WORDPRESS_PASSWORD)
   try:
     person = service.people().get(userId='me').execute(http)
 
     request = service.activities().list(
         userId=person['id'], collection='public')
 
-    print "\n"*10
     while ( request != None ):
       activities_doc = request.execute()
       for item in sorted(activities_doc.get('items', []), key=lambda x: x["id"]):
 
-        print 'ID: %-040s' % item['id']
+        print 'Assessing / Publishing ID: %-040s' % item['id']
 
         # Convert content to HTML so we can:
         #  * Determine if the page has content
@@ -365,12 +364,20 @@ def main(argv):
         else:
             content = render_object(otype, item['id'], item['object'])
 
+        # TODO client.call(posts.GetPosts({'post_status': 'publish'})) and find anything with the item['id'] that is already synched, and update? Skip? 
         post = WordPressPost()
         post.title = title
         post.content = content
+        post.post_status = 'publish'
+        # TODO Do we actually support anything which isn't an activity? No idea.
+        # TODO Go find out the spot to put these. Until then, have some flickrstyle machinetags. Custom wordpressplugin as per http://python-wordpress-xmlrpc.readthedocs.org/en/latest/examples/custom-methods.html ? Or just as tags?
+        post.term_names = {
+           'post_tag': ['google_plus_activity_id=' + item['id']]
+        }
+
         #post.author = author
-        
-        wp.call(NewPost(post))
+        if title and content:
+          wp.call(NewPost(post))
 
       request = service.activities().list_next(request, activities_doc)
 
