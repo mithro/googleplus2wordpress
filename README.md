@@ -33,25 +33,27 @@ Set Up
 -------------------------------------------------------------------------------
 Install requirements in requirements.txt
 
-# sudo pip install -r requirements.txt
+	# sudo pip install -r requirements.txt
 
 Create a config.py with your Embedly key;
-# cat > config.py <<EOF
-EMBEDLY_KEY = 'XXXXXXXXXXXXXXXXXXXXXXXXXXX'
-EOF
+
+	# cat > config.py <<EOF
+	EMBEDLY_KEY = 'XXXXXXXXXXXXXXXXXXXXXXXXXXX'
+	EOF
 
 Create a client_secrets.json with your G+ API key details;
-# cat > client_secrets.json <<EOF
-{
-  "web": {
-    "client_id": "XXXXXXXXXXXXXXXXXXXXXXXXXX.apps.googleusercontent.com",
-    "client_secret": "XXXXXXXXXXXXXXXXXXXXXXXX",
-    "redirect_uris": [],
-    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-    "token_uri": "https://accounts.google.com/o/oauth2/token"
-  }
-}
-EOF
+
+	# cat > client_secrets.json <<EOF
+	{
+	  "web": {
+	    "client_id": "XXXXXXXXXXXXXXXXXXXXXXXXXX.apps.googleusercontent.com",
+	    "client_secret": "XXXXXXXXXXXXXXXXXXXXXXXX",
+	    "redirect_uris": [],
+	    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+	    "token_uri": "https://accounts.google.com/o/oauth2/token"
+	  }
+	}
+	EOF
 
 Run the command
 # python plus.py 
@@ -62,6 +64,7 @@ Wordpress Side
 *** Warning PHP code! ***
 
 Stores the G+ ids in the Wordpress Meta information - 
+
 	'meta_query' => array(
 		array(
 			'key' => 'google_plus_(activity|comment)_id',
