@@ -4,3 +4,4 @@ python-oembed
 html2text
 nltk
 unittest
+wordpress_xmlrpc
