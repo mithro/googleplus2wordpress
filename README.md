@@ -32,27 +32,15 @@ wrapped in a reshare block tell who it came from.
 # Set Up
 Install requirements in requirements.txt
 
-	# sudo pip install -r requirements.txt
+	$ sudo pip install -r requirements.txt
 
 Create a config.py with your Embedly key;
 
-	# cat > config.py <<EOF
-	EMBEDLY_KEY = 'XXXXXXXXXXXXXXXXXXXXXXXXXXX'
-	EOF
+	$ cp config.py.dist config.py
 
 Create a client_secrets.json with your G+ API key details;
 
-	# cat > client_secrets.json <<EOF
-	{
-	  "web": {
-	    "client_id": "XXXXXXXXXXXXXXXXXXXXXXXXXX.apps.googleusercontent.com",
-	    "client_secret": "XXXXXXXXXXXXXXXXXXXXXXXX",
-	    "redirect_uris": [],
-	    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-	    "token_uri": "https://accounts.google.com/o/oauth2/token"
-	  }
-	}
-	EOF
+	$ cp client_secrets.json.dist client_secrets.json
 
 Run the command
 	python plus.py 
