@@ -7,7 +7,7 @@ Will eventually sync both posts and comments on the posts.
 Uses the Google+ Public API, so can only sync public posts. Uses it via the
 google-api-python-client python module.
 
-Uses the Wordpress XMLRPC API, so that needs to be enabled. Uses it via the 
+Uses the Wordpress XMLRPC API, so that needs to be enabled. Uses it via the
 python-wordpress-xmlrpc python module.
 
 html2text and nltk are used for generating a much nicer title then G+ produces.
@@ -21,7 +21,7 @@ We produce a bunch of different post types to allow styling different;
 
  * Standard Text Post
  * Single Photo/Video post
- * Gallery Post (collection of Photo/Videoes) 
+ * Gallery Post (collection of Photo/Videoes)
     * http://highslide.com
  * Website share
 
@@ -43,14 +43,13 @@ Create a client_secrets.json with your G+ API key details;
 	$ cp client_secrets.json.dist client_secrets.json
 
 Run the command
-	python plus.py 
-
+	$ python plus.py
 
 Wordpress Side
 -------------------------------------------------------------------------------
 *** Warning PHP code! ***
 
-Stores the G+ ids in the Wordpress Meta information - 
+Stores the G+ ids in the Wordpress Meta information -
 
 	'meta_query' => array(
 		array(
