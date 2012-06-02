@@ -55,6 +55,10 @@ import nltk
 
 FLAGS = gflags.FLAGS
 
+gflags.DEFINE_string(
+    'user_id', 'me', 'Google+ user id for the feed to look at')
+
+
 CLIENT_SECRETS = 'client_secrets.json'
 MISSING_CLIENT_SECRETS_MESSAGE = """
 WARNING: Please configure OAuth 2.0
@@ -314,7 +318,7 @@ def main(argv):
   service = build("plus", "v1", http=http)
 
   try:
-    person = service.people().get(userId='me').execute(http)
+    person = service.people().get(userId=FLAGS.user_id).execute(http)
 
     request = service.activities().list(
         userId=person['id'], collection='public')
@@ -353,6 +357,7 @@ def main(argv):
             has_content = bool(sentences[1:]) or bool(lines[1:])
 
         otype = object_type(item['object'])
+        print repr((title, has_content, otype))
 
         # If item['object'] has an id then it's a reshare,
         if item['object'].get('id', ''):
