@@ -57,6 +57,8 @@ FLAGS = gflags.FLAGS
 
 gflags.DEFINE_string(
     'user_id', 'me', 'Google+ user id for the feed to look at')
+gflags.DEFINE_boolean(
+    'verbose', False, 'Should I output information I find about things.')
 
 
 CLIENT_SECRETS = 'client_secrets.json'
@@ -86,12 +88,23 @@ OEMBED_CONSUMER.addEndpoint(
              'http://plus.google.com/photos/*',
              'https://plus.google.com/photos/*'])
     )
+
+
+class Embedly(oembed.OEmbedEndpoint):
+    KEY = config.EMBEDLY_KEY
+
+    def __init__(self):
+        oembed.OEmbedEndpoint.__init__(self,
+            'http://api.embed.ly/1/oembed',
+            ['http://*', 'https://*'])
+
+    def request(self, *args, **kw):
+        url = oembed.OEmbedEndpoint.request(self, *args, **kw)
+        return '%s&key=%s' % (url, self.KEY)
+
+
 # Fallback to embed.ly
-OEMBED_CONSUMER.addEndpoint(
-    oembed.OEmbedEndpoint(
-        'http://api.embed.ly/1/oembed', # % config.EMBEDLY_KEY,
-        ['http://*', 'https://*'])
-    )
+OEMBED_CONSUMER.addEndpoint(Embedly())
 
 
 def embed_content(url):
@@ -179,7 +192,54 @@ def render_object(otype, oid, obj, indent="    "):
 
 
 def render_webpage(oid, obj, indent):
-    return ""
+
+    webpage = None
+    images = []
+    for bits in obj:
+        if bits['objectType'] == 'article':
+            assert webpage is None
+            webpage = bits
+        elif bits['objectType'] in ('photo', 'video'):
+            images.append(bits)
+
+    embedly_info = OEMBED_CONSUMER.embed(webpage['url']).getData()
+
+    if FLAGS.verbose:
+        print "Google+ info"
+        pprint.pprint(webpage)
+        pprint.pprint(images)
+        print "Embedly info"
+        pprint.pprint(embedly_info)
+
+    # FIXME: need to get this title back up somehow?
+    newtitle = embedly_info
+
+    if 'url' not in embedly_info:
+        embedly_info['url'] = webpage['url']
+
+    output = [indent, """\
+<a href="%(url)s">%(description)s
+""" % embedly_info]
+
+    if 'html' in embedly_info:
+        output.extend(["\n", embedly_info['html'], "\n"])
+        # FIXME: Should do some type of fallback to the image version if
+        # something is wrong with the HTML.
+
+    # We prefer embedly thumbnails, unless G+ has multiple images
+    elif 'thumbnail_url' in embedly_info and len(images) < 2:
+        output.append(indent+"""\
+  <img class="alignnone" src="%(thumbnail_url)s">
+""" % embedly_info)
+    elif images:
+        for image in images:
+            print image
+            output.append(indent+"""\
+  <img class="alignnone" src="%(url)s" alt="%(content)s">
+""" % image['fullImage'])
+
+    output.append(indent+"</a>")
+    return "".join(output)
 
 
 def render_photo(oid, obj, indent):
