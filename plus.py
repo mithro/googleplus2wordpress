@@ -288,7 +288,7 @@ def render_gallery(oid, obj, indent):
 """
 # TODO Refactor
 from wordpress_xmlrpc import Client, WordPressPost
-from wordpress_xmlrpc.methods.posts import GetPosts, NewPost
+from wordpress_xmlrpc.methods import posts
 
 def main(argv):
   # Let the gflags module process the command-line arguments
@@ -370,15 +370,31 @@ def main(argv):
         post.content = content
         post.post_status = 'publish'
         # TODO Do we actually support anything which isn't an activity? No idea.
-        # TODO Go find out the spot to put these. Until then, have some flickrstyle machinetags. Custom wordpressplugin as per http://python-wordpress-xmlrpc.readthedocs.org/en/latest/examples/custom-methods.html ? Or just as tags?
-        post.term_names = {
-           'post_tag': ['google_plus_activity_id=' + item['id']]
-        }
+        post.custom_fields = [{"key": 'google_plus_activity_id', "value": item['id']}]
+
+        existing_posts = wp.call(posts.GetPosts({'custom_fields': {"key": 'google_plus_activity_id', "value": item['id']}}))
+        found = False
+        for existing_post in existing_posts:
+            for field in existing_post.custom_fields:
+                if field['key'] == 'google_plus_activity_id' and field['value'] == item['id']:
+                   found = existing_post
 
         #post.author = author
-        if title and content:
-          wp.call(NewPost(post))
+        if not title:
+            print "Cannot find title!"
 
+        if not content:
+            print "Cannot find content!"
+
+        if title and content and not found:
+            print "Publishing new post"
+            wp.call(posts.NewPost(post))
+
+        # Todo check equality, no point editing if nothing changes
+        if title and content and found:
+            print "Updating existing post"
+            wp.call(posts.EditPost(found.id, post))
+	
       request = service.activities().list_next(request, activities_doc)
 
   except AccessTokenRefreshError:
