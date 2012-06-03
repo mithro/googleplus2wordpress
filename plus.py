@@ -130,9 +130,9 @@ def embed_content(url):
 ###############################################################################
 from jinja2 import Environment, FileSystemLoader
 env = Environment(
-    loader = FileSystemLoader('templates'),
-    comment_start_string = '{% comment %}',
-    comment_end_string = '{% endcomment %}',
+    loader=FileSystemLoader('templates'),
+    comment_start_string='{% comment %}',
+    comment_end_string='{% endcomment %}',
     )
 
 
@@ -162,8 +162,12 @@ class GooglePlusPost(object):
          * video - Post of a single video.
          * post - Mainly text based post.
         """
-        images = [att for att in gdata.get('attachments', []) if att['objectType'] in ('photo', 'video')]
-        articles = [att for att in gdata.get('attachments', []) if att['objectType'] in ('article',)]
+        images = [
+            att for att in gdata.get('attachments', [])
+            if att['objectType'] in ('photo', 'video')]
+        articles = [
+            att for att in gdata.get('attachments', [])
+            if att['objectType'] in ('article',)]
 
         # If the post has multiple images/videos we produce a gallery post
         if len(images) > 1:
@@ -212,7 +216,8 @@ class GooglePlusPost(object):
             self.title = sentences[0].strip()
 
             # If we just have a link, guess we don't have a title
-            if self.title.startswith('http://') or self.title.startswith('https://'):
+            if self.title.startswith('http://') \
+                    or self.title.startswith('https://'):
                 self.title = None
 
             self.has_content = bool(sentences[1:]) or bool(lines[1:])
@@ -244,7 +249,8 @@ class GalleryPost(GooglePlusPost):
         for nobj in obj:
             embed_info = embed_content(nobj['url'])
             if embed_info:
-                embed_info['description'] = embed_info.get('description', embed_info['title'])
+                embed_info['description'] = embed_info.get(
+                    'description', embed_info['title'])
                 embed_info['src'] = 'embedly'
 
                 tmpl_data.append(embed_info)
@@ -252,7 +258,8 @@ class GalleryPost(GooglePlusPost):
                 tmpl_data.append({
                     'src': 'g+',
                     'thumbnail_url': nobj['image']['url'],
-                    'original_url': nobj.get('fullImage', nobj.get('embed', {'url': '***FIXME***'}))['url'],
+                    'original_url': nobj.get('fullImage', nobj.get(
+                        'embed', {'url': '***FIXME***'}))['url'],
                     })
 
         self.content = render_tmpl('gallery.html', {
@@ -333,98 +340,112 @@ GooglePlusPost.TYPE2CLASS['text'] = TextPost
 ###############################################################################
 
 def main(argv):
-  # Let the gflags module process the command-line arguments
-  try:
-    argv = FLAGS(argv)
-  except gflags.FlagsError, e:
-    print '%s\\nUsage: %s ARGS\\n%s' % (e, argv[0], FLAGS)
-    sys.exit(1)
+    # Let the gflags module process the command-line arguments
+    try:
+        argv = FLAGS(argv)
+    except gflags.FlagsError, e:
+        print '%s\\nUsage: %s ARGS\\n%s' % (e, argv[0], FLAGS)
+        sys.exit(1)
 
-  # If the Credentials don't exist or are invalid run through the native client
-  # flow. The Storage object will ensure that if successful the good
-  # Credentials will get written back to a file.
-  storage = Storage('plus.dat')
-  credentials = storage.get()
+    # If the Credentials don't exist or are invalid run through the native
+    # client flow. The Storage object will ensure that if successful the good
+    # Credentials will get written back to a file.
+    storage = Storage('plus.dat')
+    credentials = storage.get()
 
-  if credentials is None or credentials.invalid:
-    credentials = run(FLOW, storage)
+    if credentials is None or credentials.invalid:
+        credentials = run(FLOW, storage)
 
-  # Create an httplib2.Http object to handle our HTTP requests and authorize it
-  # with our good Credentials.
-  http = httplib2.Http()
-  http = credentials.authorize(http)
+    # Create an httplib2.Http object to handle our HTTP requests and authorize
+    # it with our good Credentials.
+    http = httplib2.Http()
+    http = credentials.authorize(http)
 
-  service = build("plus", "v1", http=http)
-  #wp = Client(config.WORDPRESS_XMLRPC_URI, config.WORDPRESS_USERNAME, config.WORDPRESS_PASSWORD)
-  try:
-    person = service.people().get(userId=FLAGS.user_id).execute(http)
+    service = build("plus", "v1", http=http)
+    # wp = Client(
+    #     config.WORDPRESS_XMLRPC_URI, config.WORDPRESS_USERNAME,
+    #     config.WORDPRESS_PASSWORD)
+    try:
+        person = service.people().get(userId=FLAGS.user_id).execute(http)
 
-    request = service.activities().list(
-        userId=person['id'], collection='public')
+        request = service.activities().list(
+            userId=person['id'], collection='public')
 
-    while ( request != None ):
-      activities_doc = request.execute()
-      for item in sorted(activities_doc.get('items', []), key=lambda x: x["id"]):
+        while request is not None:
+            activities_doc = request.execute()
+            for item in sorted(
+                    activities_doc.get('items', []), key=lambda x: x["id"]):
 
-        print 'Assessing / Publishing ID: %-040s' % item['id']
+                print 'Assessing / Publishing ID: %-040s' % item['id']
 
-        otype = GooglePlusPost.type(item['object'])
+                otype = GooglePlusPost.type(item['object'])
 
-        # If item['object'] has an id then it's a reshare,
-        if item['object'].get('id', ''):
-            author = item['object']['actor']['displayName']
-            title = '%sReshared %s from %s' % (['', "%s - " % post.title][len(post.title) > 1], otype, author)
-            content = item['annotation']
+                # If item['object'] has an id then it's a reshare,
+                if item['object'].get('id', ''):
+                    author = item['object']['actor']['displayName']
+                    title = '%sReshared %s from %s' % (
+                        ['', "%s - " % post.title][len(post.title) > 1],
+                        otype, author)
+                    content = item['annotation']
 
-            print repr(('Reshare!', title, content))
+                    print repr(('Reshare!', title, content))
 
-        # else, original post
-        else:
-            post = GooglePlusPost.TYPE2CLASS[otype](item['id'], item, [])
-            print repr((post.title, post.has_content, otype))
-            print "="*80
-            post.render()
-            print post.content
-            print "-"*80
-            print
+                # else, original post
+                else:
+                    post = GooglePlusPost.TYPE2CLASS[otype](
+                        item['id'], item, [])
+                    print repr((post.title, post.has_content, otype))
+                    print "=" * 80
+                    post.render()
+                    print post.content
+                    print "-" * 80
+                    print
 
-      break
+            break
 
-      """
-        # TODO client.call(posts.GetPosts({'post_status': 'publish'})) and find anything with the item['id'] that is already synched, and update? Skip?
-        post.post_status = 'publish'
-        # TODO Do we actually support anything which isn't an activity? No idea.
-        post.custom_fields = [{"key": 'google_plus_activity_id', "value": item['id']}]
+        """
+          # TODO client.call(posts.GetPosts({'post_status': 'publish'})) and
+          # find anything with the item['id'] that is already synched, and
+          # update? Skip?
+          post.post_status = 'publish'
+          # TODO Do we actually support anything which isn't an activity? No
+          # idea.
+          post.custom_fields = [
+                {"key": 'google_plus_activity_id', "value": item['id']}]
 
-        existing_posts = wp.call(posts.GetPosts({'custom_fields': {"key": 'google_plus_activity_id', "value": item['id']}}))
-        found = False
-        for existing_post in existing_posts:
-            for field in existing_post.custom_fields:
-                if field['key'] == 'google_plus_activity_id' and field['value'] == item['id']:
-                   found = existing_post
+          existing_posts = wp.call(posts.GetPosts(
+                {'custom_fields': {
+                        "key": 'google_plus_activity_id',
+                        "value": item['id']}}))
+          found = False
+          for existing_post in existing_posts:
+              for field in existing_post.custom_fields:
+                  if field['key'] == 'google_plus_activity_id' and \
+                        field['value'] == item['id']:
+                     found = existing_post
 
-        #post.author = author
-        if not post.title:
-            print "Cannot find title!"
+          #post.author = author
+          if not post.title:
+              print "Cannot find title!"
 
-        if not post.content:
-            print "Cannot find content!"
+          if not post.content:
+              print "Cannot find content!"
 
-        if post.title and post.content and not found:
-            print "Publishing new post"
-            wp.call(posts.NewPost(post))
+          if post.title and post.content and not found:
+              print "Publishing new post"
+              wp.call(posts.NewPost(post))
 
-        # Todo check equality, no point editing if nothing changes
-        if post.title and post.content and found:
-            print "Updating existing post"
-            wp.call(posts.EditPost(found.id, post))
+          # Todo check equality, no point editing if nothing changes
+          if post.title and post.content and found:
+              print "Updating existing post"
+              wp.call(posts.EditPost(found.id, post))
 
-      request = service.activities().list_next(request, activities_doc)
+        request = service.activities().list_next(request, activities_doc)
 """
 
     except AccessTokenRefreshError:
         print ("The credentials have been revoked or expired, please re-run"
-               "the application to re-authorize")
+                 "the application to re-authorize")
 
 if __name__ == '__main__':
     main(sys.argv)
