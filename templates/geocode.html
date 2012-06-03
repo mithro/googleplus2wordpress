@@ -1,0 +1,11 @@
+{% comment %}
+-*- coding: utf-8 -*-
+vim: set ts=2 sw=2 et sts=2 ai ft=htmldjango:
+{% endcomment %}
+<div class="geocode">
+    <a href="http://maps.google.com/?ll={{coordinates}}&q={{coordinates}}">
+        <img src="http://maps.googleapis.com/maps/api/staticmap?center={{coordinates}}&zoom=12&size=75x75&maptype=roadmap&markers=size:small|color:red|{{coordinates}}&sensor=false" class="alignleft">
+        {{placename}}
+        {{address}}
+    </a>
+</div>

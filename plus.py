@@ -229,15 +229,7 @@ class GooglePlusPost(object):
 
         address = self.gdata.get('address', '')
         placename = self.gdata.get('placeName', '')
-        return """
-<div class="geocode">
-    <a href="http://maps.google.com/?ll=%(coordinates)s&q=%(coordinates)s">
-        <img src="http://maps.googleapis.com/maps/api/staticmap?center=%(coordinates)s&zoom=12&size=75x75&maptype=roadmap&markers=size:small|color:red|%(coordinates)s&sensor=false" class="alignleft">
-        %(placename)s
-        %(address)s
-    </a>
-</div>
-""" % locals()
+        return self.render_tmpl('geocode.html', locals())
 
 
 class GalleryPost(GooglePlusPost):
