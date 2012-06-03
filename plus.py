@@ -218,7 +218,7 @@ def render_webpage(oid, obj, indent):
         embedly_info['url'] = webpage['url']
 
     output = [indent, """\
-<a href="%(url)s">%(description)s
+<a href="%(url)s">%(title)s
 """ % embedly_info]
 
     if 'html' in embedly_info:
@@ -239,6 +239,7 @@ def render_webpage(oid, obj, indent):
 """ % image['fullImage'])
 
     output.append(indent+"</a>")
+    output.append(embedly_info['description']);
     return "".join(output)
 
 
