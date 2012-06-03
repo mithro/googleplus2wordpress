@@ -356,6 +356,11 @@ def render_gallery(oid, obj, indent):
 from wordpress_xmlrpc import Client, WordPressPost
 from wordpress_xmlrpc.methods import posts
 
+def as_post(item):
+  post = WordPressPost()
+
+  return post
+
 def main(argv):
   # Let the gflags module process the command-line arguments
   try:
@@ -432,7 +437,7 @@ def main(argv):
             content = render_object(otype, item['id'], item['object'])
 
         # TODO client.call(posts.GetPosts({'post_status': 'publish'})) and find anything with the item['id'] that is already synched, and update? Skip? 
-        post = WordPressPost()
+        post = as_post(item)
         post.title = title
         post.content = content
         post.post_status = 'publish'
