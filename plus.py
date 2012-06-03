@@ -51,6 +51,8 @@ from oauth2client.tools import run
 
 import html2text
 import nltk
+from wordpress_xmlrpc import Client, WordPressPost
+from wordpress_xmlrpc.methods import posts
 
 FLAGS = gflags.FLAGS
 
@@ -150,8 +152,8 @@ def object_type(obj, indent=""):
     print obj['content']
     print "images:", len(images), "articles:", len(articles)
 
-
-def render_geocode(obj):
+# TODO This seems unused?
+def render_geocode(post, obj):
     """Render a HTML image of a lat/long address."""
     assert 'geocode' in obj
 
@@ -160,7 +162,7 @@ def render_geocode(obj):
 
     address = obj.get('address', '')
     placename = obj.get('placeName', '')
-    return """
+    post.content = """
 <div class="geocode">
     <a href="http://maps.google.com/?ll=%(coordinates)s&q=%(coordinates)s">
         <img src="http://maps.googleapis.com/maps/api/staticmap?center=%(coordinates)s&zoom=12&size=75x75&maptype=roadmap&markers=size:small|color:red|%(coordinates)s&sensor=false" class="alignleft">
@@ -171,27 +173,26 @@ def render_geocode(obj):
 """ % locals()
 
 
-def render_object(otype, oid, obj, indent="    "):
-    output = []
+def render_object(post, otype, oid, obj, indent="    "):
     if otype == "gallery":
-        output.append(render_gallery(oid, obj['attachments'], indent))
+        post = render_gallery(post, oid, obj['attachments'], indent)
 
     elif otype == "web page":
-        output.append(render_webpage(oid, obj['attachments'], indent))
+        post = render_webpage(post, oid, obj['attachments'], indent)
 
     elif otype in ("photo", "video"):
         assert len(obj['attachments']) == 1
         obj = obj['attachments']
         if otype == "photo":
-            output.append(render_photo(oid, obj[0], indent))
+            post = render_photo(post, oid, obj[0], indent)
 
         elif otype == "video":
-            output.append(render_video(oid, obj[0], indent))
+            post = render_video(post, oid, obj[0], indent)
 
-    return "".join(output)
+    return post
 
 
-def render_webpage(oid, obj, indent):
+def render_webpage(post, oid, obj, indent):
 
     webpage = None
     images = []
@@ -240,34 +241,37 @@ def render_webpage(oid, obj, indent):
 
     output.append(indent+"</a>")
     output.append(embedly_info['description']);
-    return "".join(output)
+    post.content = "".join(output)
 
+    return post
 
-def render_photo(oid, obj, indent):
+def render_photo(post, oid, obj, indent):
     #embed_info = embed_content(obj['url'])
-    return """
+    post.content = """
 %(indent)s<img class="alignnone" src="%(preview_url)s" alt="%(content)s">
 """ % {'indent': indent,
        'preview_url': obj['image']['url'],
        'url': obj['fullImage']['url'],
        'content': obj['fullImage'].get('content', ''),
        }
+    return post
 
-def render_video(oid, obj, indent):
+def render_video(post, oid, obj, indent):
     """Render a video object.
 
     Wordpress has mostly inbuilt support for recognizing video URLs, we we just
     include a link to it on it's own line.
     """
     #embed_info = embed_content(obj['url'])
-    return """
+    post.content = """
 
 %(indent)s%(url)s
 
 """ % {'indent': indent, 'url': obj['url']}
+    return post
 
 
-def render_gallery(oid, obj, indent):
+def render_gallery(post, oid, obj, indent):
     output = ["""
 %(indent)s<div id="plus_gallery_%(oid)s">
 """ % locals()]
@@ -343,7 +347,8 @@ def render_gallery(oid, obj, indent):
 %(indent)s</div>
 %(indent)s<script type="text/javascript">addHSSlideshow('plus_gallery_%(oid)s');</script>""" % locals())
 
-    return "".join(output)
+    post.content = "".join(output)
+    return post
 
 """
                         'meta_query' => array(
@@ -352,14 +357,6 @@ def render_gallery(oid, obj, indent):
                                         'value' => $item->id,
                                 ),
 """
-# TODO Refactor
-from wordpress_xmlrpc import Client, WordPressPost
-from wordpress_xmlrpc.methods import posts
-
-def as_post(item):
-  post = WordPressPost()
-
-  return post
 
 def main(argv):
   # Let the gflags module process the command-line arguments
@@ -396,7 +393,7 @@ def main(argv):
       for item in sorted(activities_doc.get('items', []), key=lambda x: x["id"]):
 
         print 'Assessing / Publishing ID: %-040s' % item['id']
-
+        post = WordPressPost()
         # Convert content to HTML so we can:
         #  * Determine if the page has content
         #  * Create a better title
@@ -408,38 +405,35 @@ def main(argv):
         txtcontent = H2T.handle(item['object']['content'])
         lines = [x for x in txtcontent.split('\n') if x.strip()]
         if not lines:
-            title = ''
+            post.title = ''
             has_content = False
         else:
             # Take the first sentence as the title
             tokenizer = nltk.PunktSentenceTokenizer()
             sentences = tokenizer.tokenize(lines[0])
-            title = sentences[0].strip()
+            post.title = sentences[0].strip()
 
             # If we just have a link, guess we don't have a title
-            if title.startswith('http://') or title.startswith('https://'):
-                title = ''
+            if post.title.startswith('http://') or post.title.startswith('https://'):
+                post.title = ''
 
             has_content = bool(sentences[1:]) or bool(lines[1:])
 
+
         otype = object_type(item['object'])
-        print repr((title, has_content, otype))
+        print repr((post.title, has_content, otype))
 
         # If item['object'] has an id then it's a reshare,
         if item['object'].get('id', ''):
             author = item['object']['actor']['displayName']
-            title = '%sReshared %s from %s' % (['', "%s - " % title][len(title) > 1], otype, author)
-
-            content = item['annotation']
+            post.title = '%sReshared %s from %s' % (['', "%s - " % post.title][len(post.title) > 1], otype, author)
+            post.content = item['annotation']
 
         # else, original post
         else:
-            content = render_object(otype, item['id'], item['object'])
+            post = render_object(post, otype, item['id'], item['object'])
 
         # TODO client.call(posts.GetPosts({'post_status': 'publish'})) and find anything with the item['id'] that is already synched, and update? Skip? 
-        post = as_post(item)
-        post.title = title
-        post.content = content
         post.post_status = 'publish'
         # TODO Do we actually support anything which isn't an activity? No idea.
         post.custom_fields = [{"key": 'google_plus_activity_id', "value": item['id']}]
@@ -452,18 +446,18 @@ def main(argv):
                    found = existing_post
 
         #post.author = author
-        if not title:
+        if not post.title:
             print "Cannot find title!"
 
-        if not content:
+        if not post.content:
             print "Cannot find content!"
 
-        if title and content and not found:
+        if post.title and post.content and not found:
             print "Publishing new post"
             wp.call(posts.NewPost(post))
 
         # Todo check equality, no point editing if nothing changes
-        if title and content and found:
+        if post.title and post.content and found:
             print "Updating existing post"
             wp.call(posts.EditPost(found.id, post))
 	
