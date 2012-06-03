@@ -62,6 +62,8 @@ gflags.DEFINE_boolean(
     'verbose', False, 'Should I output information I find about things.')
 
 
+# Code to deal with Google+'s OAuth stuff
+###############################################################################
 CLIENT_SECRETS = 'client_secrets.json'
 MISSING_CLIENT_SECRETS_MESSAGE = """
 WARNING: Please configure OAuth 2.0
@@ -77,6 +79,10 @@ with information from the APIs Console <https://code.google.com/apis/console>.
 FLOW = flow_from_clientsecrets(CLIENT_SECRETS,
     scope='https://www.googleapis.com/auth/plus.me',
     message=MISSING_CLIENT_SECRETS_MESSAGE)
+
+
+# Code to get more information about posted contents using oembed protocol
+###############################################################################
 
 
 OEMBED_CONSUMER = oembed.OEmbedConsumer()
@@ -108,7 +114,6 @@ class Embedly(oembed.OEmbedEndpoint):
 # Fallback to embed.ly
 OEMBED_CONSUMER.addEndpoint(Embedly(config.EMBEDLEY_KEY))
 
-
 def embed_content(url):
     """For some content we use oEmbed to get better information."""
     try:
@@ -120,49 +125,111 @@ def embed_content(url):
         return False
 
 
-def object_type(obj, indent=""):
-    """Detect the Google plus object type.
+# Code to render templates
+###############################################################################
+from jinja2 import Environment, FileSystemLoader
+env = Environment(
+    loader=FileSystemLoader('templates'),
+    comment_start_string = '{% comment %}',
+    comment_end_string = '{% endcomment %}',
+    )
 
-    Object types include:
-     * gallery - List of photos+videos.
-     * web page - Link to a webpage.
-     * photo - Post of a single photo.
-     * video - Post of a single video.
-     * post - Mainly text based post.
-    """
-    images = [att for att in obj.get('attachments', []) if att['objectType'] in ('photo', 'video')]
-    articles = [att for att in obj.get('attachments', []) if att['objectType'] in ('article',)]
 
-    # If the post has multiple images/videos we produce a gallery post
-    if len(images) > 1:
-        return "gallery"
+def render_tmpl(filename, content):
+    template = env.get_template(filename)
+    return template.render(**content)
 
-    # If the post has an article, then we render an article post
-    elif articles:
-        return "web page"
 
-    # If the post has a single image, then we render an image post
-    elif images:
-        return images[0]['objectType']
+# Google Plus post types
+###############################################################################
 
-    # Otherwise, it's a standard blog post
-    else:
-        return "post"
+class GooglePlusPost(object):
+    TYPE = None
 
-    print obj['content']
-    print "images:", len(images), "articles:", len(articles)
+    TYPE2CLASS = {}
 
-# TODO This seems unused?
-def render_geocode(post, obj):
-    """Render a HTML image of a lat/long address."""
-    assert 'geocode' in obj
+    @staticmethod
+    def type(gdata):
+        """Detect the Google plus object type.
 
-    coordinates = ",".join(obj['geocode'].split())
-    assert len(coordinates.split(',')) == 2
+        Object types include:
+         * gallery - List of photos+videos.
+         * web page - Link to a webpage.
+         * photo - Post of a single photo.
+         * video - Post of a single video.
+         * post - Mainly text based post.
+        """
+        images = [att for att in gdata.get('attachments', []) if att['objectType'] in ('photo', 'video')]
+        articles = [att for att in gdata.get('attachments', []) if att['objectType'] in ('article',)]
 
-    address = obj.get('address', '')
-    placename = obj.get('placeName', '')
-    post.content = """
+        # If the post has multiple images/videos we produce a gallery post
+        if len(images) > 1:
+            return "gallery"
+
+        # If the post has an article, then we render an article post
+        elif articles:
+            return "web page"
+
+        # If the post has a single image, then we render an image post
+        elif images:
+            return images[0]['objectType']
+
+        # Otherwise, it's a standard blog post
+        else:
+            return "text"
+
+    def __init__(self, gid, gdata, gcomment):
+        assert self.TYPE
+
+        self.gid = gid
+        self.gdata = gdata
+        self.gcomment = gcomment
+
+        self.tags = []
+        self.media = []
+        self.comments = []
+
+
+        # Convert content to HTML so we can:
+        #  * Determine if the page has content
+        #  * Create a better title
+        H2T = html2text.HTML2Text()
+        H2T.ignore_links = True
+        H2T.ignore_images = True
+        H2T.ignore_emphasis = True
+        H2T.body_width = 0
+        txtcontent = H2T.handle(self.gdata['object']['content'])
+        lines = [x for x in txtcontent.split('\n') if x.strip()]
+        if not lines:
+            self.has_content = False
+            self.title = None
+        else:
+            # Take the first sentence as the title
+            tokenizer = nltk.PunktSentenceTokenizer()
+            sentences = tokenizer.tokenize(lines[0])
+            self.title = sentences[0].strip()
+
+            # If we just have a link, guess we don't have a title
+            if self.title.startswith('http://') or self.title.startswith('https://'):
+                self.title = None
+
+            self.has_content = bool(sentences[1:]) or bool(lines[1:])
+
+            # FIXME: Should we strip the title from the content?
+            self.content = self.gdata['object']['content']
+
+    # TODO: Actually use this
+    def render_geocode(self):
+        """Render a HTML image of a lat/long address."""
+        if 'geocode' not in self.gdata:
+            return False
+
+        coordinates = ",".join(self.gdata['geocode'].split())
+        assert len(coordinates.split(',')) == 2
+
+        address = self.gdata.get('address', '')
+        placename = self.gdata.get('placeName', '')
+        return """
 <div class="geocode">
     <a href="http://maps.google.com/?ll=%(coordinates)s&q=%(coordinates)s">
         <img src="http://maps.googleapis.com/maps/api/staticmap?center=%(coordinates)s&zoom=12&size=75x75&maptype=roadmap&markers=size:small|color:red|%(coordinates)s&sensor=false" class="alignleft">
@@ -173,193 +240,127 @@ def render_geocode(post, obj):
 """ % locals()
 
 
-def render_object(post, otype, oid, obj, indent="    "):
-    if otype == "gallery":
-        post = render_gallery(post, oid, obj['attachments'], indent)
+class GalleryPost(GooglePlusPost):
+    TYPE = 'gallery'
 
-    elif otype == "web page":
-        post = render_webpage(post, oid, obj['attachments'], indent)
+    def render(self):
+        obj = self.gdata['object']['attachments']
 
-    elif otype in ("photo", "video"):
-        assert len(obj['attachments']) == 1
-        obj = obj['attachments']
-        if otype == "photo":
-            post = render_photo(post, oid, obj[0], indent)
+        tmpl_data = []
+        for nobj in obj:
+            embed_info = embed_content(nobj['url'])
+            if embed_info:
+                embed_info['description'] = embed_info.get('description', embed_info['title'])
+                embed_info['src'] = 'embedly'
 
-        elif otype == "video":
-            post = render_video(post, oid, obj[0], indent)
+                tmpl_data.append(embed_info)
+            else:
+                tmpl_data.append({
+                    'src': 'g+',
+                    'thumbnail_url': nobj['image']['url'],
+                    'original_url': nobj.get('fullImage', nobj.get('embed', {'url': '***FIXME***'}))['url'],
+                    })
 
-    return post
+        self.content = render_tmpl('gallery.html', {
+            'gid': self.gid,
+            'attachments': tmpl_data,
+            })
 
 
-def render_webpage(post, oid, obj, indent):
+GooglePlusPost.TYPE2CLASS['gallery'] = GalleryPost
 
-    webpage = None
-    images = []
-    for bits in obj:
-        if bits['objectType'] == 'article':
-            assert webpage is None
-            webpage = bits
-        elif bits['objectType'] in ('photo', 'video'):
-            images.append(bits)
 
-    embedly_info = OEMBED_CONSUMER.embed(webpage['url']).getData()
+class WebPagePost(GooglePlusPost):
+    TYPE = 'web page'
 
-    if FLAGS.verbose:
-        print "Google+ info"
-        pprint.pprint(webpage)
-        pprint.pprint(images)
-        print "Embedly info"
-        pprint.pprint(embedly_info)
 
-    # FIXME: need to get this title back up somehow?
-    newtitle = embedly_info
+    def render(self):
+        obj = self.gdata['object']['attachments']
 
-    if 'url' not in embedly_info:
-        embedly_info['url'] = webpage['url']
+        webpage = None
+        images = []
+        for bits in obj:
+            if bits['objectType'] == 'article':
+                assert webpage is None
+                webpage = bits
+            elif bits['objectType'] in ('photo', 'video'):
+                images.append(bits)
 
-    output = [indent, """\
+        self.edata = embed_content(webpage['url'])
+
+        newtitle = self.edata
+        if 'url' not in self.edata:
+            self.edata['url'] = webpage['url']
+
+        output = ["""\
 <a href="%(url)s">%(title)s
-""" % embedly_info]
+""" % self.edata]
 
-    if 'html' in embedly_info:
-        output.extend(["\n", embedly_info['html'], "\n"])
-        # FIXME: Should do some type of fallback to the image version if
-        # something is wrong with the HTML.
+        if 'html' in self.edata:
+            output.extend(["\n", self.edata['html'], "\n"])
+            # FIXME: Should do some type of fallback to the image version if
+            # something is wrong with the HTML.
 
-    # We prefer embedly thumbnails, unless G+ has multiple images
-    elif 'thumbnail_url' in embedly_info and len(images) < 2:
-        output.append(indent+"""\
+        # We prefer embedly thumbnails, unless G+ has multiple images
+        elif 'thumbnail_url' in self.edata and len(images) < 2:
+            output.append("""\
   <img class="alignnone" src="%(thumbnail_url)s">
-""" % embedly_info)
-    elif images:
-        for image in images:
-            print image
-            output.append(indent+"""\
-  <img class="alignnone" src="%(url)s" alt="%(content)s">
+""" % self.edata)
+        elif images:
+            for image in images:
+                print image
+                output.append("""\
+<img class="alignnone" src="%(url)s" alt="%(content)s">
 """ % image['fullImage'])
 
-    output.append(indent+"</a>")
-    output.append(embedly_info['description']);
-    if not post.title and embedly_info['title']:
-        post.title = embedly_info['title']
+        output.append("</a>")
+        output.append(self.edata['description']);
+        self.content = "".join(output)
 
-    post.content = "".join(output)
+        if not self.title and self.edata['title']:
+            self.title = self.edata['title']
 
-    return post
 
-def render_photo(post, oid, obj, indent):
-    #embed_info = embed_content(obj['url'])
-    post.content = """
-%(indent)s<img class="alignnone" src="%(preview_url)s" alt="%(content)s">
-""" % {'indent': indent,
-       'preview_url': obj['image']['url'],
+GooglePlusPost.TYPE2CLASS['web page'] = WebPagePost
+
+
+class PhotoPost(GooglePlusPost):
+    TYPE = 'photo'
+
+    def render(self):
+        obj = self.gdata['object']['attachments'][0]
+        self.content = """
+<img class="alignnone" src="%(preview_url)s" alt="%(content)s">
+""" % {'preview_url': obj['image']['url'],
        'url': obj['fullImage']['url'],
        'content': obj['fullImage'].get('content', ''),
        }
-    return post
-
-def render_video(post, oid, obj, indent):
-    """Render a video object.
-
-    Wordpress has mostly inbuilt support for recognizing video URLs, we we just
-    include a link to it on it's own line.
-    """
-    #embed_info = embed_content(obj['url'])
-    post.content = """
-
-%(indent)s%(url)s
-
-""" % {'indent': indent, 'url': obj['url']}
-    return post
 
 
-def render_gallery(post, oid, obj, indent):
-    output = ["""
-%(indent)s<div id="plus_gallery_%(oid)s">
-""" % locals()]
-
-    for i, nobj in enumerate(obj):
-        if i == 5:
-            output.append("""
-%(indent)s    <div style="display: none;">
-""" % locals())
-            indent += "    "
-
-        embed_info = embed_content(nobj['url'])
-        if embed_info:
-            embed_info['i'] = i
-            embed_info['oid'] = oid
-            embed_info['indent'] = indent
-            embed_info['description'] = embed_info.get('description', embed_info['title'])
-
-            if 'html' in embed_info:
-                output.append("""
-%(indent)s    <a href="#"
-%(indent)s        id="plus_gallery_%(oid)s"
-%(indent)s        onclick="return hs.expand(this, { autoplay: false, slideshowGroup: 'plus_gallery_%(oid)s' })"
-%(indent)s        class="highslide">
-%(indent)s        <img src="%(thumbnail_url)s"
-%(indent)s            id="plus_gallery_%(oid)s_%(i)s"
-%(indent)s            class="shashinThumbnailImage"
-%(indent)s            alt="%(description)s"
-%(indent)s            title="%(title)s"
-%(indent)s            />
-%(indent)s    </a>
-%(indent)s    <div class="highslide-maincontent">
-%(indent)s%(html)s
-%(indent)s    </div>""" % embed_info)
-            else:
-                output.append("""
-%(indent)s    <a href="%(url)s"
-%(indent)s        id="plus_gallery_%(oid)s"
-%(indent)s        onclick="return hs.expand(this, { autoplay: false, slideshowGroup: 'plus_gallery_%(oid)s' })"
-%(indent)s        class="highslide">
-%(indent)s        <img src="%(thumbnail_url)s"
-%(indent)s            id="plus_gallery_%(oid)s_%(i)s"
-%(indent)s            class="shashinThumbnailImage"
-%(indent)s            alt="%(description)s"
-%(indent)s            title="%(title)s"
-%(indent)s            />
-%(indent)s    </a>""" % embed_info)
-
-        else:
-            output.append("""
-%(indent)s    <a href="%(original_url)s"
-%(indent)s        id="plus_gallery_%(oid)s"
-%(indent)s        onclick="return hs.expand(this, { autoplay: false, slideshowGroup: 'plus_gallery_%(oid)s' })"
-%(indent)s        class="highslide">
-%(indent)s        <img src="%(thumbnail_url)s"
-%(indent)s            class="shashinThumbnailImage" id="plus_gallery_%(oid)s_%(i)s" />
-%(indent)s    </a>""" % {
-                'i': i,
-                'oid': oid,
-                'indent': indent,
-                'thumbnail_url': nobj['image']['url'],
-                'original_url': nobj.get('fullImage', nobj['embed'])['url'],
-                })
+GooglePlusPost.TYPE2CLASS['photo'] = PhotoPost
 
 
-    if i >= 5:
-        indent = indent[:-4]
-        output.append("""
-%(indent)s    </div>
-""" % locals())
+class VideoPost(GooglePlusPost):
+    TYPE = 'video'
 
-    output.append("""
-%(indent)s</div>
-%(indent)s<script type="text/javascript">addHSSlideshow('plus_gallery_%(oid)s');</script>""" % locals())
+    def render(self):
+        obj = self.gdata['object']['attachments'][0]
+        self.content = """%(url)s""" % {'url': obj['url']}
 
-    post.content = "".join(output)
-    return post
 
-"""
-                        'meta_query' => array(
-                                array(
-                                        'key' => 'google_plus_activity_id',
-                                        'value' => $item->id,
-                                ),
-"""
+GooglePlusPost.TYPE2CLASS['video'] = VideoPost
+
+
+class TextPost(GooglePlusPost):
+    TYPE = 'text'
+
+    def render(self):
+        pass
+
+GooglePlusPost.TYPE2CLASS['text'] = TextPost
+
+
+###############################################################################
 
 def main(argv):
   # Let the gflags module process the command-line arguments
@@ -384,7 +385,7 @@ def main(argv):
   http = credentials.authorize(http)
 
   service = build("plus", "v1", http=http)
-  wp = Client(config.WORDPRESS_XMLRPC_URI, config.WORDPRESS_USERNAME, config.WORDPRESS_PASSWORD)
+  #wp = Client(config.WORDPRESS_XMLRPC_URI, config.WORDPRESS_USERNAME, config.WORDPRESS_PASSWORD)
   try:
     person = service.people().get(userId=FLAGS.user_id).execute(http)
 
@@ -396,48 +397,31 @@ def main(argv):
       for item in sorted(activities_doc.get('items', []), key=lambda x: x["id"]):
 
         print 'Assessing / Publishing ID: %-040s' % item['id']
-        post = WordPressPost()
-        post.content = ""
-        post.title = ""
-        # Convert content to HTML so we can:
-        #  * Determine if the page has content
-        #  * Create a better title
-        H2T = html2text.HTML2Text()
-        H2T.ignore_links = True
-        H2T.ignore_images = True
-        H2T.ignore_emphasis = True
-        H2T.body_width = 0
-        txtcontent = H2T.handle(item['object']['content'])
-        lines = [x for x in txtcontent.split('\n') if x.strip()]
-        if not lines:
-            has_content = False
-        else:
-            # Take the first sentence as the title
-            tokenizer = nltk.PunktSentenceTokenizer()
-            sentences = tokenizer.tokenize(lines[0])
-            post.title = sentences[0].strip()
 
-            # If we just have a link, guess we don't have a title
-            if post.title.startswith('http://') or post.title.startswith('https://'):
-                post.title = ''
-
-            has_content = bool(sentences[1:]) or bool(lines[1:])
-
-
-        otype = object_type(item['object'])
-        print repr((post.title, has_content, otype))
+        otype = GooglePlusPost.type(item['object'])
 
         # If item['object'] has an id then it's a reshare,
         if item['object'].get('id', ''):
             author = item['object']['actor']['displayName']
-            post.title = '%sReshared %s from %s' % (['', "%s - " % post.title][len(post.title) > 1], otype, author)
-            post.content = item['annotation']
+            title = '%sReshared %s from %s' % (['', "%s - " % post.title][len(post.title) > 1], otype, author)
+            content = item['annotation']
+
+            print repr(('Reshare!', title, content))
 
         # else, original post
         else:
-            post = render_object(post, otype, item['id'], item['object'])
+            post = GooglePlusPost.TYPE2CLASS[otype](item['id'], item, [])
+            print repr((post.title, post.has_content, otype))
+            print "="*80
+            post.render()
+            print post.content
+            print "-"*80
+            print
 
-        # TODO client.call(posts.GetPosts({'post_status': 'publish'})) and find anything with the item['id'] that is already synched, and update? Skip? 
+      break
+
+      """
+        # TODO client.call(posts.GetPosts({'post_status': 'publish'})) and find anything with the item['id'] that is already synched, and update? Skip?
         post.post_status = 'publish'
         # TODO Do we actually support anything which isn't an activity? No idea.
         post.custom_fields = [{"key": 'google_plus_activity_id', "value": item['id']}]
@@ -464,8 +448,9 @@ def main(argv):
         if post.title and post.content and found:
             print "Updating existing post"
             wp.call(posts.EditPost(found.id, post))
-	
+
       request = service.activities().list_next(request, activities_doc)
+"""
 
   except AccessTokenRefreshError:
     print ("The credentials have been revoked or expired, please re-run"

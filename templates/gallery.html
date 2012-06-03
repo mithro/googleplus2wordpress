@@ -1,0 +1,55 @@
+{% comment %}
+-*- coding: utf-8 -*-
+vim: set ts=2 sw=2 et sts=2 ai ft=htmldjango:
+{% endcomment %}
+
+{% for obj in attachments %}
+  {% if loop.index0 == 5 %}
+    <div style="display: none;">
+  {% endif %}
+
+  {% if obj.src in 'embedly' %}
+    {% if 'html' in obj %}
+      <a href="#"
+          id="plus_gallery_{{gid}}"
+          onclick="return hs.expand(this, { autoplay: false, slideshowGroup: 'plus_gallery_{{gid}}' })"
+          class="highslide">
+          <img src="{{obj.thumbnail_url}}"
+              id="plus_gallery_{{gid}}_{{loop.index0}}"
+              class="shashinThumbnailImage"
+              alt="{{obj.description}}"
+              title="{{obj.title}}"
+              />
+      </a>
+      <div class="highslide-maincontent">
+      {{obj.html}}
+      </div>
+    {% else %}
+      <a href="{{obj.url}}"
+          id="plus_gallery_{{gid}}"
+          onclick="return hs.expand(this, { autoplay: false, slideshowGroup: 'plus_gallery_{{gid}}' })"
+          class="highslide">
+          <img src="{{obj.thumbnail_url}}"
+              id="plus_gallery_{{gid}}_{{loop.index0}}"
+              class="shashinThumbnailImage"
+              alt="{{obj.description}}"
+              title="{{obj.title}}"
+              />
+      </a>
+    {% endif %}
+  {% else %}
+    <a href="{{obj.original_url}}"
+        id="plus_gallery_{{gid}}"
+        onclick="return hs.expand(this, { autoplay: false, slideshowGroup: 'plus_gallery_{{gid}}' })"
+        class="highslide">
+        <img src="{{obj.thumbnail_url}}" class="shashinThumbnailImage" id="plus_gallery_{{gid}}_{{loop.index0}}" />
+    </a>
+  {% endif %}
+
+  {% if loop.last and loop.index0 >= 5 %}
+    </div>
+  {% endif %}
+
+{% endfor %}
+</div>
+<script type="text/javascript">addHSSlideshow('plus_gallery_{{gid}}');</script>
