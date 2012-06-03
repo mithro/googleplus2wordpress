@@ -114,6 +114,7 @@ class Embedly(oembed.OEmbedEndpoint):
 # Fallback to embed.ly
 OEMBED_CONSUMER.addEndpoint(Embedly(config.EMBEDLEY_KEY))
 
+
 def embed_content(url):
     """For some content we use oEmbed to get better information."""
     try:
@@ -129,7 +130,7 @@ def embed_content(url):
 ###############################################################################
 from jinja2 import Environment, FileSystemLoader
 env = Environment(
-    loader=FileSystemLoader('templates'),
+    loader = FileSystemLoader('templates'),
     comment_start_string = '{% comment %}',
     comment_end_string = '{% endcomment %}',
     )
@@ -423,11 +424,9 @@ def main(argv):
       request = service.activities().list_next(request, activities_doc)
 """
 
-  except AccessTokenRefreshError:
-    print ("The credentials have been revoked or expired, please re-run"
-      "the application to re-authorize")
+    except AccessTokenRefreshError:
+        print ("The credentials have been revoked or expired, please re-run"
+               "the application to re-authorize")
 
 if __name__ == '__main__':
-  main(sys.argv)
-
-
+    main(sys.argv)
