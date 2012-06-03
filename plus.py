@@ -192,7 +192,6 @@ class GooglePlusPost(object):
         self.media = []
         self.comments = []
 
-
         # Convert content to HTML so we can:
         #  * Determine if the page has content
         #  * Create a better title
@@ -267,7 +266,6 @@ GooglePlusPost.TYPE2CLASS['gallery'] = GalleryPost
 
 class WebPagePost(GooglePlusPost):
     TYPE = 'web page'
-
 
     def render(self):
         obj = self.gdata['object']['attachments']
