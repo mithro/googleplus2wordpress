@@ -241,6 +241,9 @@ def render_webpage(post, oid, obj, indent):
 
     output.append(indent+"</a>")
     output.append(embedly_info['description']);
+    if not post.title and embedly_info['title']:
+        post.title = embedly_info['title']
+
     post.content = "".join(output)
 
     return post
@@ -394,6 +397,8 @@ def main(argv):
 
         print 'Assessing / Publishing ID: %-040s' % item['id']
         post = WordPressPost()
+        post.content = ""
+        post.title = ""
         # Convert content to HTML so we can:
         #  * Determine if the page has content
         #  * Create a better title
@@ -405,7 +410,6 @@ def main(argv):
         txtcontent = H2T.handle(item['object']['content'])
         lines = [x for x in txtcontent.split('\n') if x.strip()]
         if not lines:
-            post.title = ''
             has_content = False
         else:
             # Take the first sentence as the title
