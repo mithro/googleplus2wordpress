@@ -90,12 +90,13 @@ OEMBED_CONSUMER.addEndpoint(
 
 
 class Embedly(oembed.OEmbedEndpoint):
-    KEY = config.EMBEDLY_KEY
+    KEY = False
 
-    def __init__(self):
+    def __init__(self, key):
         oembed.OEmbedEndpoint.__init__(self,
             'http://api.embed.ly/1/oembed',
             ['http://*', 'https://*'])
+        self.KEY = key
 
     def request(self, *args, **kw):
         url = oembed.OEmbedEndpoint.request(self, *args, **kw)
@@ -103,7 +104,7 @@ class Embedly(oembed.OEmbedEndpoint):
 
 
 # Fallback to embed.ly
-OEMBED_CONSUMER.addEndpoint(Embedly())
+OEMBED_CONSUMER.addEndpoint(Embedly(config.EMBEDLEY_KEY))
 
 
 def embed_content(url):
