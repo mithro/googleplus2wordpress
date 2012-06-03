@@ -3,4 +3,4 @@ python-wordpress-xmlrpc
 python-oembed
 html2text
 nltk
-python-wordpress-xmlrpc
+jinja2
