@@ -136,6 +136,8 @@ env = Environment(
 
 
 def render_tmpl(filename, content):
+    if 'self' in content:
+        del content['self']
     template = env.get_template(filename)
     return template.render(**content)
 
@@ -278,39 +280,16 @@ class WebPagePost(GooglePlusPost):
             elif bits['objectType'] in ('photo', 'video'):
                 images.append(bits)
 
-        self.edata = embed_content(webpage['url'])
+        edata = embed_content(webpage['url'])
+        if not self.title and edata['title']:
+            self.title = edata['title']
 
-        newtitle = self.edata
-        if 'url' not in self.edata:
-            self.edata['url'] = webpage['url']
+        has_edata_html = 'html' in edata
+        has_edata_image = 'thumbnail_url' in edata
+        has_images = len(images) > 2
+        has_preview = has_edata_html or has_edata_image or has_images
 
-        output = ["""\
-<a href="%(url)s">%(title)s
-""" % self.edata]
-
-        if 'html' in self.edata:
-            output.extend(["\n", self.edata['html'], "\n"])
-            # FIXME: Should do some type of fallback to the image version if
-            # something is wrong with the HTML.
-
-        # We prefer embedly thumbnails, unless G+ has multiple images
-        elif 'thumbnail_url' in self.edata and len(images) < 2:
-            output.append("""\
-  <img class="alignnone" src="%(thumbnail_url)s">
-""" % self.edata)
-        elif images:
-            for image in images:
-                print image
-                output.append("""\
-<img class="alignnone" src="%(url)s" alt="%(content)s">
-""" % image['fullImage'])
-
-        output.append("</a>")
-        output.append(self.edata['description']);
-        self.content = "".join(output)
-
-        if not self.title and self.edata['title']:
-            self.title = self.edata['title']
+        self.content = render_tmpl('webpage.html', locals())
 
 
 GooglePlusPost.TYPE2CLASS['web page'] = WebPagePost
