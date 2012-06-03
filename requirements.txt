@@ -2,5 +2,5 @@ google-api-python-client
 python-wordpress-xmlrpc
 python-oembed
 html2text
+pep8
 nltk
-python-wordpress-xmlrpc
