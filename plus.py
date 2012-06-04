@@ -196,6 +196,9 @@ class GooglePlusPost(object):
         self.media = []
         self.comments = []
 
+        self.content = None
+        self.title = None
+
         # Convert content to HTML so we can:
         #  * Determine if the page has content
         #  * Create a better title
@@ -240,8 +243,13 @@ class GooglePlusPost(object):
 
     def toWordPressPost(self):
         post = WordPressPost()
-        post.title = self.title
-        post.content = self.content
+
+        if self.title:
+            post.title = self.title
+
+        if self.content:
+            post.content = self.content
+
         post.post_status = 'publish'
         return post
 
@@ -343,8 +351,8 @@ class TextPost(GooglePlusPost):
 
 GooglePlusPost.TYPE2CLASS['text'] = TextPost
 
-
 ###############################################################################
+
 
 def main(argv):
     # Let the gflags module process the command-line arguments
@@ -370,8 +378,11 @@ def main(argv):
 
     service = build("plus", "v1", http=http)
     wp = Client(
-         config.WORDPRESS_XMLRPC_URI, config.WORDPRESS_USERNAME,
-         config.WORDPRESS_PASSWORD)
+         config.WORDPRESS_XMLRPC_URI,
+         config.WORDPRESS_USERNAME,
+         config.WORDPRESS_PASSWORD
+    )
+
     try:
         person = service.people().get(userId=FLAGS.user_id).execute(http)
 
@@ -380,10 +391,15 @@ def main(argv):
 
         while request is not None:
             activities_doc = request.execute()
-            for item in sorted(
-                    activities_doc.get('items', []), key=lambda x: x["id"]):
 
-                print 'Assessing / Publishing ID: %-040s' % item['id']
+            items = sorted(
+                activities_doc.get('items', []),
+                key=lambda x: x["id"]
+            )
+
+            for item in items:
+                if FLAGS.verbose:
+                    print 'Assessing / Publishing ID: %-040s' % item['id']
 
                 otype = GooglePlusPost.type(item['object'])
 
@@ -395,19 +411,19 @@ def main(argv):
                         ['', "%s - " % post.title][len(post.title) > 1],
                         otype, author)
                     post.content = item['annotation']
-
-                    print repr(('Reshare!', post.title, post.content))
+                    if FLAGS.verbose:
+                        print repr(('Reshare!', post.title, post.content))
 
                 # else, original post
                 else:
                     post = GooglePlusPost.TYPE2CLASS[otype](
                         item['id'], item, [])
-                    print repr((post.title, post.has_content, otype))
-                    print "=" * 80
-                    post.render()
-                    print post.content
-                    print "-" * 80
-                    print
+                    if FLAGS.verbose:
+                        print repr((post.title, post.has_content, otype))
+                        print "=" * 80
+                        post.render()
+                        print post.content
+                        print "-" * 80
 
                 existing_posts = wp.call(posts.GetPosts(
                      {'custom_fields': {
@@ -428,23 +444,26 @@ def main(argv):
 
                 #post.author = author
                 if not post.title:
-                    print "Cannot find title!"
+                    if FLAGS.verbose:
+                        print "Cannot find title!"
 
                 if not post.content:
-                    print "Cannot find content!"
+                    if FLAGS.verbose:
+                        print "Cannot find content!"
 
                 if post.title and post.content and not found:
-                    print "Publishing new post"
+                    if FLAGS.verbose:
+                        print "Publishing new post"
                     wp.call(posts.NewPost(publishable_post))
 
                 # Todo check equality, no point editing if nothing changes
                 if post.title and post.content and found:
-                    print "Updating existing post"
+                    if FLAGS.verbose:
+                        print "Updating existing post"
                     wp.call(posts.EditPost(found.id, publishable_post))
 
                 request = service.activities().list_next(
-                              request,
-                              activities_doc
+                              request, activities_doc
                           )
             break
 
