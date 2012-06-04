@@ -13,15 +13,14 @@ vim: set ts=2 sw=2 et sts=2 ai ft=htmldjango:
       </blockquote>
 {% if has_preview %}
     </td>
-  </tr><tr>
     <td>
   {% if has_edata_html %}
        {{html}}
   {% elif has_edata_image %}
-      <img style="float: right;" src='{{edata.thumbnail_url}}'>
+      <img src='{{edata.thumbnail_url}}'>
   {% elif has_images %}
     {% for image in images %}
-      <img style="float: right;" src='{{image.url}}' alt="{{image.content}}">
+      <img src='{{image.url}}' alt="{{image.content}}">
     {% endfor %}
   {% endif %}
     </td>
