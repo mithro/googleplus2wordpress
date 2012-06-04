@@ -60,6 +60,8 @@ gflags.DEFINE_string(
     'user_id', 'me', 'Google+ user id for the feed to look at')
 gflags.DEFINE_boolean(
     'verbose', False, 'Should I output information I find about things.')
+gflags.DEFINE_boolean(
+    'dryrun', False, "Don't upload anything to wordpress yet.")
 
 
 # Code to deal with Google+'s OAuth stuff
@@ -377,11 +379,13 @@ def main(argv):
     http = credentials.authorize(http)
 
     service = build("plus", "v1", http=http)
-    wp = Client(
-         config.WORDPRESS_XMLRPC_URI,
-         config.WORDPRESS_USERNAME,
-         config.WORDPRESS_PASSWORD
-    )
+
+    if not FLAGS.dryrun:
+        wp = Client(
+             config.WORDPRESS_XMLRPC_URI,
+             config.WORDPRESS_USERNAME,
+             config.WORDPRESS_PASSWORD
+        )
 
     try:
         person = service.people().get(userId=FLAGS.user_id).execute(http)
@@ -392,7 +396,7 @@ def main(argv):
         i = 0
         n = 100
         existing_posts = more_posts = []
-        while True:
+        while True and not FLAGS.dryrun:
             i = n + i
             more_posts = wp.call(posts.GetPosts({"number": n, 'offset': i}))
             existing_posts += more_posts
@@ -458,6 +462,9 @@ def main(argv):
                 if not post.content:
                     if FLAGS.verbose:
                         print "Cannot find content!"
+
+                if FLAGS.dryrun:
+                    continue
 
                 if post.title and post.content and not found:
                     if FLAGS.verbose:
