@@ -15,7 +15,8 @@ vim: set ts=2 sw=2 et sts=2 ai ft=htmldjango:
     </td>
     <td>
   {% if has_edata_html %}
-       {{html}}
+      <!-- Embeded data from Embedly -->
+       {{edata.html}}
   {% elif has_edata_image %}
       <img src='{{edata.thumbnail_url}}'>
   {% elif has_images %}

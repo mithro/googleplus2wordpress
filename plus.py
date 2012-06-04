@@ -304,6 +304,10 @@ class WebPagePost(GooglePlusPost):
                 images.append(bits)
 
         edata = embed_content(webpage['url'])
+        if FLAGS.verbose:
+            print "Embedly data"
+            pprint.pprint(edata)
+
         if not self.title and edata['title']:
             self.title = edata['title']
 
