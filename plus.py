@@ -421,12 +421,10 @@ def main(argv):
                             found = existing_post
 
                 publishable_post = post.toWordPressPost()
-                # TODO Do we actually support anything which isn't an activity? No
-                # idea.
+                # TODO Do we actually support anything which isn't an activity?
                 # TODO Surely a GooglePost object could know its own ID
                 publishable_post.custom_fields = [
                     {"key": 'google_plus_activity_id', "value": item['id']}]
-
 
                 #post.author = author
                 if not post.title:
@@ -444,7 +442,10 @@ def main(argv):
                     print "Updating existing post"
                     wp.call(posts.EditPost(found.id, publishable_post))
 
-                request = service.activities().list_next(request, activities_doc)
+                request = service.activities().list_next(
+                              request,
+                              activities_doc
+                          )
             break
 
     except AccessTokenRefreshError:
