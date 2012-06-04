@@ -437,7 +437,6 @@ def main(argv):
                         if field['key'] == 'google_plus_activity_id' and \
                             field['value'] == item['id']:
                             found = existing_post
-                            print found
 
                 publishable_post = post.toWordPressPost()
                 # TODO Do we actually support anything which isn't an activity?
