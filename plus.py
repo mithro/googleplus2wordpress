@@ -425,22 +425,28 @@ def main(argv):
                         print post.content
                         print "-" * 80
 
-                existing_posts = wp.call(posts.GetPosts(
-                     {'custom_fields': {
-                             "key": 'google_plus_activity_id',
-                             "value": item['id']}}))
+                i = 0
+                n = 100
+                existing_posts = wp.call(posts.GetPosts({'number': n, 'offset': i}))
+                while len(existing_posts) == ++i * n:
+                    existing_posts += wp.call(posts.GetPosts({"number": n, 'offset': i}))
+
+                print "Looking for existing posts"
+                print existing_posts
                 found = False
                 for existing_post in existing_posts:
                     for field in existing_post.custom_fields:
                         if field['key'] == 'google_plus_activity_id' and \
                             field['value'] == item['id']:
                             found = existing_post
+                            print found
 
                 publishable_post = post.toWordPressPost()
                 # TODO Do we actually support anything which isn't an activity?
                 # TODO Surely a GooglePost object could know its own ID
                 publishable_post.custom_fields = [
-                    {"key": 'google_plus_activity_id', "value": item['id']}]
+                    {"key": 'google_plus_activity_id', "value": item['id']}
+                ]
 
                 #post.author = author
                 if not post.title:
@@ -452,15 +458,18 @@ def main(argv):
                         print "Cannot find content!"
 
                 if post.title and post.content and not found:
-                    if FLAGS.verbose:
-                        print "Publishing new post"
+                    print found
+                    #if FLAGS.verbose:
+                    print "Publishing new post"
+                    print publishable_post.custom_fields
                     wp.call(posts.NewPost(publishable_post))
 
                 # Todo check equality, no point editing if nothing changes
                 if post.title and post.content and found:
-                    if FLAGS.verbose:
-                        print "Updating existing post"
-                    wp.call(posts.EditPost(found.id, publishable_post))
+                    if found.content != post.content or found.title != post.title:
+                        if FLAGS.verbose:
+                            print "Updating existing post"
+                        wp.call(posts.EditPost(found.id, publishable_post))
 
                 request = service.activities().list_next(
                               request, activities_doc
