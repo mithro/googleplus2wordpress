@@ -397,8 +397,11 @@ def main(argv):
         n = 100
         existing_posts = more_posts = []
         while True and not FLAGS.dryrun:
-            i = n + i
             more_posts = wp.call(posts.GetPosts({"number": n, 'offset': i}))
+            if FLAGS.verbose:
+                print "Found ", i, n, more_posts
+
+            i = n + i
             existing_posts += more_posts
 
             if len(more_posts) == 0:
