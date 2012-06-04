@@ -8,7 +8,7 @@ vim: set ts=2 sw=2 et sts=2 ai ft=htmldjango:
   <tr>
     <td>
 {% endif %}
-      <blockquote>
+      <blockquote cite="{{webpage.url}}">
         {{edata.description}}
       </blockquote>
 {% if has_preview %}
