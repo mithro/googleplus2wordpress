@@ -62,6 +62,8 @@ gflags.DEFINE_boolean(
     'verbose', False, 'Should I output information I find about things.')
 gflags.DEFINE_boolean(
     'dryrun', False, "Don't upload anything to wordpress yet.")
+gflags.DEFINE_string(
+    'post_id', None, 'Google+ post id for the tool to look at.')
 
 
 # Code to deal with Google+'s OAuth stuff
@@ -420,6 +422,9 @@ def main(argv):
             )
 
             for item in items:
+                if FLAGS.post_id and FLAGS.post_id != item['id']:
+                    continue
+
                 if FLAGS.verbose:
                     print 'Assessing / Publishing ID: %-040s' % item['id']
 
