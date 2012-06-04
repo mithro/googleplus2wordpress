@@ -238,6 +238,13 @@ class GooglePlusPost(object):
         placename = self.gdata.get('placeName', '')
         return self.render_tmpl('geocode.html', locals())
 
+    def toWordPressPost(self):
+        post = WordPressPost()
+        post.title = self.title
+        post.content = self.content
+        post.post_status = 'publish'
+        return post
+
 
 class GalleryPost(GooglePlusPost):
     TYPE = 'gallery'
@@ -362,9 +369,9 @@ def main(argv):
     http = credentials.authorize(http)
 
     service = build("plus", "v1", http=http)
-    # wp = Client(
-    #     config.WORDPRESS_XMLRPC_URI, config.WORDPRESS_USERNAME,
-    #     config.WORDPRESS_PASSWORD)
+    wp = Client(
+         config.WORDPRESS_XMLRPC_URI, config.WORDPRESS_USERNAME,
+         config.WORDPRESS_PASSWORD)
     try:
         person = service.people().get(userId=FLAGS.user_id).execute(http)
 
@@ -383,12 +390,13 @@ def main(argv):
                 # If item['object'] has an id then it's a reshare,
                 if item['object'].get('id', ''):
                     author = item['object']['actor']['displayName']
-                    title = '%sReshared %s from %s' % (
+                    post = TextPost()
+                    post.title = '%sReshared %s from %s' % (
                         ['', "%s - " % post.title][len(post.title) > 1],
                         otype, author)
-                    content = item['annotation']
+                    post.content = item['annotation']
 
-                    print repr(('Reshare!', title, content))
+                    print repr(('Reshare!', post.title, post.content))
 
                 # else, original post
                 else:
@@ -401,47 +409,43 @@ def main(argv):
                     print "-" * 80
                     print
 
+                existing_posts = wp.call(posts.GetPosts(
+                     {'custom_fields': {
+                             "key": 'google_plus_activity_id',
+                             "value": item['id']}}))
+                found = False
+                for existing_post in existing_posts:
+                    for field in existing_post.custom_fields:
+                        if field['key'] == 'google_plus_activity_id' and \
+                            field['value'] == item['id']:
+                            found = existing_post
+
+                publishable_post = post.toWordPressPost()
+                # TODO Do we actually support anything which isn't an activity? No
+                # idea.
+                # TODO Surely a GooglePost object could know its own ID
+                publishable_post.custom_fields = [
+                    {"key": 'google_plus_activity_id', "value": item['id']}]
+
+
+                #post.author = author
+                if not post.title:
+                    print "Cannot find title!"
+
+                if not post.content:
+                    print "Cannot find content!"
+
+                if post.title and post.content and not found:
+                    print "Publishing new post"
+                    wp.call(posts.NewPost(publishable_post))
+
+                # Todo check equality, no point editing if nothing changes
+                if post.title and post.content and found:
+                    print "Updating existing post"
+                    wp.call(posts.EditPost(found.id, publishable_post))
+
+                request = service.activities().list_next(request, activities_doc)
             break
-
-        """
-          # TODO client.call(posts.GetPosts({'post_status': 'publish'})) and
-          # find anything with the item['id'] that is already synched, and
-          # update? Skip?
-          post.post_status = 'publish'
-          # TODO Do we actually support anything which isn't an activity? No
-          # idea.
-          post.custom_fields = [
-                {"key": 'google_plus_activity_id', "value": item['id']}]
-
-          existing_posts = wp.call(posts.GetPosts(
-                {'custom_fields': {
-                        "key": 'google_plus_activity_id',
-                        "value": item['id']}}))
-          found = False
-          for existing_post in existing_posts:
-              for field in existing_post.custom_fields:
-                  if field['key'] == 'google_plus_activity_id' and \
-                        field['value'] == item['id']:
-                     found = existing_post
-
-          #post.author = author
-          if not post.title:
-              print "Cannot find title!"
-
-          if not post.content:
-              print "Cannot find content!"
-
-          if post.title and post.content and not found:
-              print "Publishing new post"
-              wp.call(posts.NewPost(post))
-
-          # Todo check equality, no point editing if nothing changes
-          if post.title and post.content and found:
-              print "Updating existing post"
-              wp.call(posts.EditPost(found.id, post))
-
-        request = service.activities().list_next(request, activities_doc)
-"""
 
     except AccessTokenRefreshError:
         print ("The credentials have been revoked or expired, please re-run"
