@@ -5,3 +5,4 @@ html2text
 pep8
 nltk
 jinja2
+numpy
