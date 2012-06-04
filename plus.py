@@ -389,6 +389,12 @@ def main(argv):
         request = service.activities().list(
             userId=person['id'], collection='public')
 
+        i = 0
+        n = 100
+        existing_posts = wp.call(posts.GetPosts({'number': n, 'offset': i}))
+        while len(existing_posts) == ++i * n:
+            existing_posts += wp.call(posts.GetPosts({"number": n, 'offset': i}))
+
         while request is not None:
             activities_doc = request.execute()
 
@@ -425,14 +431,6 @@ def main(argv):
                         print post.content
                         print "-" * 80
 
-                i = 0
-                n = 100
-                existing_posts = wp.call(posts.GetPosts({'number': n, 'offset': i}))
-                while len(existing_posts) == ++i * n:
-                    existing_posts += wp.call(posts.GetPosts({"number": n, 'offset': i}))
-
-                print "Looking for existing posts"
-                print existing_posts
                 found = False
                 for existing_post in existing_posts:
                     for field in existing_post.custom_fields:
