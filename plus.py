@@ -391,9 +391,16 @@ def main(argv):
 
         i = 0
         n = 100
-        existing_posts = wp.call(posts.GetPosts({'number': n, 'offset': i}))
-        while len(existing_posts) == ++i * n:
-            existing_posts += wp.call(posts.GetPosts({"number": n, 'offset': i}))
+        existing_posts = more_posts = []
+        while True:
+            i = n+i
+            more_posts = wp.call(posts.GetPosts({"number": n, 'offset': i}))
+            existing_posts += more_posts
+
+            if len(more_posts) == 0:
+                break
+            i = n+i
+
 
         while request is not None:
             activities_doc = request.execute()
@@ -434,8 +441,7 @@ def main(argv):
                 found = False
                 for existing_post in existing_posts:
                     for field in existing_post.custom_fields:
-                        if field['key'] == 'google_plus_activity_id' and \
-                            field['value'] == item['id']:
+                        if field['key'] == 'google_plus_activity_id' and field['value'] == item['id']:
                             found = existing_post
 
                 publishable_post = post.toWordPressPost()
@@ -455,10 +461,8 @@ def main(argv):
                         print "Cannot find content!"
 
                 if post.title and post.content and not found:
-                    print found
-                    #if FLAGS.verbose:
-                    print "Publishing new post"
-                    print publishable_post.custom_fields
+                    if FLAGS.verbose:
+                        print "Publishing new post"
                     wp.call(posts.NewPost(publishable_post))
 
                 # Todo check equality, no point editing if nothing changes
