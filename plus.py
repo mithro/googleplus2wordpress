@@ -114,9 +114,8 @@ class Embedly(oembed.OEmbedEndpoint):
         url = oembed.OEmbedEndpoint.request(self, *args, **kw)
         return '%s&key=%s' % (url, self.KEY)
 
-
 # Fallback to embed.ly
-OEMBED_CONSUMER.addEndpoint(Embedly(config.EMBEDLEY_KEY))
+OEMBED_CONSUMER.addEndpoint(Embedly(config.EMBEDLY_KEY))
 
 
 def embed_content(url):
@@ -288,7 +287,7 @@ class GalleryPost(GooglePlusPost):
 
 
 GooglePlusPost.TYPE2CLASS['gallery'] = GalleryPost
-
+  
 
 class WebPagePost(GooglePlusPost):
     TYPE = 'web page'
