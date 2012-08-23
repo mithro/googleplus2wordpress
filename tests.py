@@ -1,10 +1,31 @@
+#!/usr/bin/python2.7
+# -*- coding: utf-8 -*-
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""Test module for plus.py
+
+you can run the test by running:
+    $ python -m tests
+"""
+
+__author__ = 'bayuadji@gmail.com'
+
 import json
 import os
 import unittest
 
 from mock import patch, MagicMock, Mock
-
-__author__ = 'bayuadji@gmail.com'
 
 
 class TestGooglePost(unittest.TestCase):
@@ -27,9 +48,8 @@ class TestGooglePost(unittest.TestCase):
         """
         Load the file data, from json into gdata.
         """
-        file_ = open(os.path.join(os.path.dirname(__file__),
-                                  "test_documents",
-                                  filename))
+        file_ = open(os.path.join(
+                       os.path.dirname(__file__), "test_documents", filename))
         content = file_.read()
         file_.close()
         return json.loads(content)
@@ -45,12 +65,7 @@ class TestPhoto(TestGooglePost):
         photo_post = PhotoPost(gid, gdata, gcomment)
         photo_post.render()
         #we need to strip, since the render add
-        result = ('<img class="alignnone" '
-            'src="https://images0-focus-opensocial.googleusercontent.com'
-            '/gadgets/proxy?container=focus&gadget'
-            '=a&resize_h=100&url=https%3A%2F%2Flh5.googleusercontent.com%2F-'
-            'YhGQ2IKWJok%2FUDR4WL8APXI%2FAAAAAAAAAOI'
-            '%2FdjbWuClePMk%2Fs0-d%2F14-05-07_1132.jpg" alt="">')
+        result = """<img class="alignnone" src="https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=https%3A%2F%2Flh5.googleusercontent.com%2F-YhGQ2IKWJok%2FUDR4WL8APXI%2FAAAAAAAAAOI%2FdjbWuClePMk%2Fs0-d%2F14-05-07_1132.jpg" alt="">"""
 
         self.assertEqual(result,
                          photo_post.content.strip())
@@ -100,13 +115,7 @@ class TestPhotoContent(TestGooglePost):
         photo_post = PhotoPost(gid, gdata, gcomment)
         photo_post.render()
         #we need to strip, since the render add
-        result = ('<img class="alignnone" src="https://images0-'
-                  'focus-opensocial.googleusercontent.com/'
-                  'gadgets/proxy?container=focus&gadget=a&'
-                  'resize_h=100&url=https%3A%2F%2Flh3.'
-                  'googleusercontent.com%2F-pO-hpo7EM7E%2'
-                  'FTv55RUxDaUI%2FAAAAAAAAAMk%2FW3HP0NZUdjg%2Fw'
-                  '288-h288%2Fcrop.png" alt="">')
+        result = """<img class="alignnone" src="https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=https%3A%2F%2Flh3.googleusercontent.com%2F-pO-hpo7EM7E%2FTv55RUxDaUI%2FAAAAAAAAAMk%2FW3HP0NZUdjg%2Fw288-h288%2Fcrop.png" alt="">"""
         self.assertEqual(result,
                          photo_post.content.strip())
 
