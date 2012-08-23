@@ -54,21 +54,24 @@ class TestGooglePost(unittest.TestCase):
         file_.close()
         return json.loads(content)
 
+    def do_test_equal(self, post_class, filename, result):
+        """Helper for test equal"""
+        gdata = self.load_data(filename)
+        gid = ''
+        gcomment = {}
+        post = post_class(gid, gdata, gcomment)
+        post.render()
+        self.assertEqual(result,
+                         post.content.strip())
+
 
 class TestPhoto(TestGooglePost):
     def test_photo_from_google_plus(self):
         from plus import PhotoPost
 
-        gdata = self.load_data('pic_without_content.json')
-        gid = ''
-        gcomment = {}
-        photo_post = PhotoPost(gid, gdata, gcomment)
-        photo_post.render()
         #we need to strip, since the render add
-        result = """<img class="alignnone" src="https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=https%3A%2F%2Flh5.googleusercontent.com%2F-YhGQ2IKWJok%2FUDR4WL8APXI%2FAAAAAAAAAOI%2FdjbWuClePMk%2Fs0-d%2F14-05-07_1132.jpg" alt="">"""
-
-        self.assertEqual(result,
-                         photo_post.content.strip())
+        result = """<img class="alignnone" src="https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=https%3A%2F%2Flh3.googleusercontent.com%2F-pO-hpo7EM7E%2FTv55RUxDaUI%2FAAAAAAAAAMk%2FW3HP0NZUdjg%2Fw288-h288%2Fcrop.png" alt="">"""
+        self.do_test_equal(PhotoPost, 'pic_with_content.json', result)
 
     def test_photo_from_picasa_web(self):
         pass
@@ -82,13 +85,23 @@ class TestPhoto(TestGooglePost):
 
 class TestVideo(TestGooglePost):
     def test_video_youtube(self):
-        pass
+        from plus import VideoPost as Post
+        self.do_test_equal(Post,
+            'sample_video_3.json',
+            'http://www.youtube.com/watch?v=SF1Tndsfobc')
 
     def test_video_blip_tv(self):
-        pass
+        from plus import VideoPost as Post
+        self.do_test_equal(Post,
+            'sample_video_5.json',
+            'http://blip.tv/pycon-us-videos-2009-2010-2011/pycon-2011-python-ides-panel-4901374')
 
     def test_video_vimeo(self):
-        pass
+        from plus import VideoPost as Post
+
+        self.do_test_equal(Post,
+            'sample_video_1.json',
+            'http://www.vimeo.com/20743963')
 
 
 class TestMultiple(TestGooglePost):
@@ -109,15 +122,9 @@ class TestPhotoContent(TestGooglePost):
     def test_photo_from_google_plus(self):
         from plus import PhotoPost
 
-        gdata = self.load_data('pic_with_content.json')
-        gid = ''
-        gcomment = {}
-        photo_post = PhotoPost(gid, gdata, gcomment)
-        photo_post.render()
         #we need to strip, since the render add
         result = """<img class="alignnone" src="https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=https%3A%2F%2Flh3.googleusercontent.com%2F-pO-hpo7EM7E%2FTv55RUxDaUI%2FAAAAAAAAAMk%2FW3HP0NZUdjg%2Fw288-h288%2Fcrop.png" alt="">"""
-        self.assertEqual(result,
-                         photo_post.content.strip())
+        self.do_test_equal(PhotoPost, 'pic_with_content.json', result)
 
     def test_photo_from_picasa_web(self):
         pass
@@ -131,13 +138,22 @@ class TestPhotoContent(TestGooglePost):
 
 class TestVideoContent(TestGooglePost):
     def test_video_youtube(self):
-        pass
+        from plus import VideoPost as Post
+        self.do_test_equal(Post,
+            'sample_video_2.json',
+            'http://www.youtube.com/watch?v=YcFHeTaS9ew')
 
     def test_video_blip_tv(self):
-        pass
+        from plus import VideoPost as Post
+        self.do_test_equal(Post,
+            'sample_video_4.json',
+            'http://blip.tv/pycon-us-videos-2009-2010-2011/pycon-2011-hidden-treasures-in-the-standard-library-4901130')
 
     def test_video_vimeo(self):
-        pass
+        from plus import VideoPost as Post
+        self.do_test_equal(Post,
+            'sample_video_0.json',
+            'http://www.vimeo.com/1622823')
 
 
 class TestMultipleContent(TestGooglePost):
@@ -156,25 +172,8 @@ class TestMultipleContent(TestGooglePost):
 
 class TestPhotoShare(TestGooglePost):
     def test_photo_from_google_plus(self):
-        from plus import PhotoPost
-
-        gdata = {'object':
-                 {'content': '',
-                  'attachments': [{'image': {'url':'http://test'},
-                                   'fullImage':
-                                     {'url': 'http://fullimage',
-                                      'content': 'test'}}]
-                    }
-                }
-        gid = ''
-        gcomment = {}
-        photo_post = PhotoPost(gid, gdata, gcomment)
-        photo_post.render()
-        #we need to strip, since the render add
-        result = '<img class="alignnone" src="http://test" alt="test">'
-        self.assertEqual(result,
-                         photo_post.content.strip())
-
+        pass
+    
     def test_photo_from_picasa_web(self):
         pass
 
