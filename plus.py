@@ -212,6 +212,7 @@ class GooglePlusPost(object):
         H2T.body_width = 0
         txtcontent = H2T.handle(self.gdata['object']['content'])
         lines = [x for x in txtcontent.split('\n') if x.strip()]
+  
         if not lines:
             self.has_content = False
             self.title = None
@@ -242,7 +243,7 @@ class GooglePlusPost(object):
 
         address = self.gdata.get('address', '')
         placename = self.gdata.get('placeName', '')
-        return self.render_tmpl('geocode.html', locals())
+        return render_tmpl('geocode.html', locals())
 
     def toWordPressPost(self):
         post = WordPressPost()
