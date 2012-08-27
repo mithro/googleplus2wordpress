@@ -32,10 +32,12 @@ class TestGooglePost(unittest.TestCase):
     def setUp(self):
         self.oauth2client_mock = MagicMock()
         self.oauth2client_mock.flow_from_clientsecrets = Mock()
+        self.config = MagicMock()
         modules = {
             'oauth2client.client': self.oauth2client_mock,
             'oauth2client.flow_from_clientsecrets':
-              self.oauth2client_mock.flow_from_clientsecrets
+              self.oauth2client_mock.flow_from_clientsecrets,
+            'config': self.config
         }
 
         self.module_patcher = patch.dict('sys.modules', modules)
@@ -70,6 +72,15 @@ class TestGooglePost(unittest.TestCase):
             result_tmpl = getattr(post, method, "ERROR")()
             self.assertEqual(result,
                              result_tmpl)
+
+    def mock_embedly(self, expected_return_value):
+        """Mock embedly object"""
+        import plus
+
+        plus.OEMBED_CONSUMER = MagicMock()
+        embed = MagicMock()
+        embed.getData = MagicMock(side_effect=expected_return_value)
+        plus.OEMBED_CONSUMER.embed.return_value = embed
 
 
 class TestPhoto(TestGooglePost):
@@ -206,10 +217,13 @@ class TestShare(TestGooglePost):
 class TestUtils(TestGooglePost):
     def test_title_generation(self):
         from plus import WebPagePost
+
+        self.mock_embedly([{'title': "From mock"}])
         gdata = self.load_data('sample_webpage.json')
 
         post = WebPagePost('', gdata, {})
-        self.assertEqual("""The Freshdesk Story - How Girish Mathrubootham innovated online helpdesk software &amp; made cloud based customer support affordable""", post.title)
+        post.render()
+        self.assertEqual("""From mock""", post.title)
 
 
 class TestGeocode(TestGooglePost):

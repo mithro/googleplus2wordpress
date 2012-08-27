@@ -123,7 +123,6 @@ def embed_content(url):
     try:
         response = OEMBED_CONSUMER.embed(url)
         data = response.getData()
-
         return data
     except IOError, e:
         return False
@@ -212,7 +211,7 @@ class GooglePlusPost(object):
         H2T.body_width = 0
         txtcontent = H2T.handle(self.gdata['object']['content'])
         lines = [x for x in txtcontent.split('\n') if x.strip()]
-  
+
         if not lines:
             self.has_content = False
             self.title = None
@@ -288,7 +287,7 @@ class GalleryPost(GooglePlusPost):
 
 
 GooglePlusPost.TYPE2CLASS['gallery'] = GalleryPost
-  
+
 
 class WebPagePost(GooglePlusPost):
     TYPE = 'web page'
