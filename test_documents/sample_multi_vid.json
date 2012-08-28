@@ -1,0 +1,84 @@
+{
+    "kind": "plus#activity",
+    "provider": {
+        "title": "Google+"
+    },
+    "title": "",
+    "url": "https://plus.google.com/111415681122206252267/posts/bbN8WJpsW7M",
+    "object": {
+        "resharers": {
+            "totalItems": 0,
+            "selfLink": "https://www.googleapis.com/plus/v1/activities/z12mfzmynmr0uluai04cghrx2lvsdbgaeys0k/people/resharers"
+        },
+        "attachments": [
+            {
+                "content": "20051210-w50s.flv",
+                "url": "https://plus.google.com/photos/111415681122206252267/albums/5780283745281083937/5780283748382925602",
+                "image": {
+                    "url": "https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=https%3A%2F%2Flh4.googleusercontent.com%2F-MfJNeumzCbI%2FUDexcaNT4yI%2FAAAAAAAAARI%2FiPtcyvUSHiA%2Fs288%2F20051210-w50s.flv",
+                    "type": "image/jpeg"
+                },
+                "embed": {
+                    "url": "https://lh4.googleusercontent.com/-MfJNeumzCbI/UDexcaNT4yI/AAAAAAAAARI/iPtcyvUSHiA/20051210-w50s.flv",
+                    "type": "image/jpeg"
+                },
+                "objectType": "video"
+            },
+            {
+                "content": "20051210-w50s.flv",
+                "url": "https://plus.google.com/photos/111415681122206252267/albums/5780283745281083937/5780284895649435186",
+                "image": {
+                    "url": "https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=https%3A%2F%2Flh5.googleusercontent.com%2F-lLhNdxwVedw%2FUDeyfMG9jjI%2FAAAAAAAAARc%2Fvfip-XqZJIg%2Fs288%2F20051210-w50s.flv",
+                    "type": "image/jpeg"
+                },
+                "embed": {
+                    "url": "https://lh5.googleusercontent.com/-lLhNdxwVedw/UDeyfMG9jjI/AAAAAAAAARc/vfip-XqZJIg/20051210-w50s.flv",
+                    "type": "image/jpeg"
+                },
+                "objectType": "video"
+            }
+        ],
+        "originalContent": "",
+        "url": "https://plus.google.com/111415681122206252267/posts/bbN8WJpsW7M",
+        "content": "",
+        "plusoners": {
+            "totalItems": 0,
+            "selfLink": "https://www.googleapis.com/plus/v1/activities/z12mfzmynmr0uluai04cghrx2lvsdbgaeys0k/people/plusoners"
+        },
+        "replies": {
+            "totalItems": 0,
+            "selfLink": "https://www.googleapis.com/plus/v1/activities/z12mfzmynmr0uluai04cghrx2lvsdbgaeys0k/comments"
+        },
+        "objectType": "note"
+    },
+    "updated": "2012-08-24T16:58:05.535Z",
+    "actor": {
+        "url": "https://plus.google.com/111415681122206252267",
+        "image": {
+            "url": "https://lh3.googleusercontent.com/-PlbEGa3K3j4/AAAAAAAAAAI/AAAAAAAAAAA/m6K0pSyg7CM/photo.jpg?sz=50"
+        },
+        "displayName": "Bayu Adji",
+        "id": "111415681122206252267",
+        "name": {
+            "givenName": "Bayu",
+            "familyName": "Adji"
+        }
+    },
+    "access": {
+        "items": [
+            {
+                "type": "public"
+            },
+            {
+                "type": "person",
+                "id": "111415681122206252267"
+            }
+        ],
+        "kind": "plus#acl"
+    },
+    "verb": "post",
+    "etag": "\"16PodAIGww7iC6r2PJol9nE39w4/gGxJjBOSvsVSb4qMeL-S4S7smtY\"",
+    "published": "2012-08-24T16:58:05.000Z",
+    "crosspostSource": "oz:111415681122206252267.13959757cdf.0",
+    "id": "z12mfzmynmr0uluai04cghrx2lvsdbgaeys0k"
+}

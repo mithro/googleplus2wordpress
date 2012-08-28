@@ -1,0 +1,84 @@
+{
+    "kind": "plus#activity",
+    "provider": {
+        "title": "Google+"
+    },
+    "title": "Reshared post from Google AdSense\n \n\nFollowing yesterday’s Hangout on Air with Lynette Young (htt...",
+    "url": "https://plus.google.com/111415681122206252267/posts/ZmPzHTpyAVq",
+    "object": {
+        "resharers": {
+            "totalItems": 0,
+            "selfLink": "https://www.googleapis.com/plus/v1/activities/z12yetqaxlu5tdwq304cghrx2lvsdbgaeys0k/people/resharers"
+        },
+        "attachments": [
+            {
+                "content": "A look inside Google AdSense",
+                "url": "http://adsense.blogspot.com/2012/08/social-fridays-help-your-site-stand-out.html",
+                "displayName": "Social Fridays: Help your site stand out with the +1 button - Inside AdSense",
+                "objectType": "article"
+            },
+            {
+                "image": {
+                    "url": "https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=http%3A%2F%2F4.bp.blogspot.com%2F-23GejdkMucw%2FUDbuas-i9lI%2FAAAAAAAACQI%2FAM8IkSFpKAs%2Fs320%2Fscreenshot.png",
+                    "type": "image/jpeg"
+                },
+                "fullImage": {
+                    "url": "http://adsense.blogspot.com/2012/08/social-fridays-help-your-site-stand-out.html",
+                    "type": "image/jpeg"
+                },
+                "objectType": "photo"
+            }
+        ],
+        "url": "https://plus.google.com/116176459448466735273/posts/6zc3ShpKnn2",
+        "actor": {
+            "url": "https://plus.google.com/116176459448466735273",
+            "image": {
+                "url": "https://lh4.googleusercontent.com/-PTo5NefR-jk/AAAAAAAAAAI/AAAAAAAAAAA/2eDC0C7MXFc/photo.jpg?sz=50"
+            },
+            "displayName": "Google AdSense",
+            "id": "116176459448466735273"
+        },
+        "content": "Following yesterday’s Hangout on Air with Lynette Young (<a href=\"http://goo.gl/uk1Ko\" >http://goo.gl/uk1Ko</a>), we’re kicking off a weekly ‘Social Fridays’ blog series to help you make the most of Google+ for your online publishing business. Join us every Friday on the Inside AdSense blog as we walk you through getting set up optimally with Google+. Check out our first post today, which provides an introduction to the +1 button -- learn how adding +1 buttons to your pages allows users to recommend your content, and how to use reports in Webmaster Tools to track the impact of the +1 button. Do you have any tips to share about adding the +1 button on your pages? ",
+        "plusoners": {
+            "totalItems": 0,
+            "selfLink": "https://www.googleapis.com/plus/v1/activities/z12yetqaxlu5tdwq304cghrx2lvsdbgaeys0k/people/plusoners"
+        },
+        "replies": {
+            "totalItems": 0,
+            "selfLink": "https://www.googleapis.com/plus/v1/activities/z12yetqaxlu5tdwq304cghrx2lvsdbgaeys0k/comments"
+        },
+        "id": "z123tbkpmuzietul322ehpl5esbje51j204",
+        "objectType": "activity"
+    },
+    "updated": "2012-08-24T17:44:47.767Z",
+    "actor": {
+        "url": "https://plus.google.com/111415681122206252267",
+        "image": {
+            "url": "https://lh3.googleusercontent.com/-PlbEGa3K3j4/AAAAAAAAAAI/AAAAAAAAAAA/m6K0pSyg7CM/photo.jpg?sz=50"
+        },
+        "displayName": "Bayu Adji",
+        "id": "111415681122206252267",
+        "name": {
+            "givenName": "Bayu",
+            "familyName": "Adji"
+        }
+    },
+    "annotation": "",
+    "access": {
+        "items": [
+            {
+                "type": "public"
+            },
+            {
+                "type": "person",
+                "id": "111415681122206252267"
+            }
+        ],
+        "kind": "plus#acl"
+    },
+    "verb": "share",
+    "etag": "\"16PodAIGww7iC6r2PJol9nE39w4/U7V0Lp_qYc47e80vgLZJFnm6vmk\"",
+    "published": "2012-08-24T17:44:47.767Z",
+    "crosspostSource": "17905330094616366570",
+    "id": "z12yetqaxlu5tdwq304cghrx2lvsdbgaeys0k"
+}

@@ -1,0 +1,74 @@
+{
+    "kind": "plus#activity",
+    "provider": {
+        "title": "Google+"
+    },
+    "title": "",
+    "url": "https://plus.google.com/111415681122206252267/posts/em8ECha7QZy",
+    "object": {
+        "resharers": {
+            "totalItems": 0,
+            "selfLink": "https://www.googleapis.com/plus/v1/activities/z13ugfwagrfrj1sb104cghrx2lvsdbgaeys0k/people/resharers"
+        },
+        "attachments": [
+            {
+                "url": "http://blip.tv/pycon-us-videos-2009-2010-2011/pycon-2011-python-ides-panel-4901374",
+                "displayName": "PyCon 2011: Python IDEs Panel",
+                "objectType": "article"
+            },
+            {
+                "image": {
+                    "url": "https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=http%3A%2F%2Fa.images.blip.tv%2FPycon-PyCon2011PythonIDEsPanel405.png",
+                    "type": "image/jpeg"
+                },
+                "fullImage": {
+                    "url": "http://blip.tv/pycon-us-videos-2009-2010-2011/pycon-2011-python-ides-panel-4901374",
+                    "type": "image/jpeg"
+                },
+                "objectType": "photo"
+            }
+        ],
+        "originalContent": "",
+        "url": "https://plus.google.com/111415681122206252267/posts/em8ECha7QZy",
+        "content": "",
+        "plusoners": {
+            "totalItems": 0,
+            "selfLink": "https://www.googleapis.com/plus/v1/activities/z13ugfwagrfrj1sb104cghrx2lvsdbgaeys0k/people/plusoners"
+        },
+        "replies": {
+            "totalItems": 0,
+            "selfLink": "https://www.googleapis.com/plus/v1/activities/z13ugfwagrfrj1sb104cghrx2lvsdbgaeys0k/comments"
+        },
+        "objectType": "note"
+    },
+    "updated": "2012-08-22T22:21:09.027Z",
+    "actor": {
+        "url": "https://plus.google.com/111415681122206252267",
+        "image": {
+            "url": "https://lh3.googleusercontent.com/-PlbEGa3K3j4/AAAAAAAAAAI/AAAAAAAAAAA/m6K0pSyg7CM/photo.jpg?sz=50"
+        },
+        "displayName": "Bayu Adji",
+        "id": "111415681122206252267",
+        "name": {
+            "givenName": "Bayu",
+            "familyName": "Adji"
+        }
+    },
+    "access": {
+        "items": [
+            {
+                "type": "public"
+            },
+            {
+                "type": "person",
+                "id": "111415681122206252267"
+            }
+        ],
+        "kind": "plus#acl"
+    },
+    "verb": "post",
+    "etag": "\"16PodAIGww7iC6r2PJol9nE39w4/STv4FduDXqnTZTCFiQ9JiSRR3Q0\"",
+    "published": "2012-08-22T22:21:08.000Z",
+    "crosspostSource": "oz:111415681122206252267.139506c9ec5.0",
+    "id": "z13ugfwagrfrj1sb104cghrx2lvsdbgaeys0k"
+}

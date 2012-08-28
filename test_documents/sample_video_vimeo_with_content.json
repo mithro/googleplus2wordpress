@@ -1,0 +1,72 @@
+{
+    "kind": "plus#activity",
+    "provider": {
+        "title": "Google+"
+    },
+    "title": "Little bit blurred, but it awesome",
+    "url": "https://plus.google.com/111415681122206252267/posts/QJGeB2eigyp",
+    "object": {
+        "resharers": {
+            "totalItems": 0,
+            "selfLink": "https://www.googleapis.com/plus/v1/activities/z12tzvdrlxmlz3d4f04cghrx2lvsdbgaeys0k/people/resharers"
+        },
+        "attachments": [
+            {
+                "displayName": "Arduino IRC Bot using python",
+                "url": "http://www.vimeo.com/1622823",
+                "image": {
+                    "url": "https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=http%3A%2F%2Fb.vimeocdn.com%2Fts%2F603%2F445%2F60344523_200.jpg",
+                    "type": "image/jpeg"
+                },
+                "content": "Sorry for the blurriness! Be patient.\n\nThis is a demonstration of a script I wrote using python which acts as a bridge between an IRC channel and your serial port (in this case, the arduino). In this scenario, I have the arduino set up with an led and a potentiometer. The bot software has signed on using the nick &#39;arduino&#39; and I am getting my friend &#39;redguts&#39; to send it messages all the way from Houston. The bot listens to the entire room&#39;s conversation but it doesn&#39;t respond until you address it by it&#39;s name, in this case, &#39;arduino: xxmssgxx&#39;. It then reads the command and responds accordingly. You could also set it up to speak at will. For instance, if you programmed your arduino to detect when a certain event happens, say the temp in the room goes above a certain value, it can tell the IRC Channel without being queried. Or even set up private chats. I am not releasing the source this week but you can send me a private message if you are desperate and have python/arduino skills.\n\n** Finally, get the code here http://blog.datasingularity.com/?p=148 **",
+                "embed": {
+                    "url": "https://vimeo.com/moogaloop.swf?clip_id=1622823&server=vimeo.com&show_title=1&show_byline=1&show_portrait=0&fullscreen=1&autoplay=1",
+                    "type": "application/x-shockwave-flash"
+                },
+                "objectType": "video"
+            }
+        ],
+        "originalContent": "",
+        "url": "https://plus.google.com/111415681122206252267/posts/QJGeB2eigyp",
+        "content": "Little bit blurred, but it awesome",
+        "plusoners": {
+            "totalItems": 0,
+            "selfLink": "https://www.googleapis.com/plus/v1/activities/z12tzvdrlxmlz3d4f04cghrx2lvsdbgaeys0k/people/plusoners"
+        },
+        "replies": {
+            "totalItems": 0,
+            "selfLink": "https://www.googleapis.com/plus/v1/activities/z12tzvdrlxmlz3d4f04cghrx2lvsdbgaeys0k/comments"
+        },
+        "objectType": "note"
+    },
+    "updated": "2012-08-22T22:19:42.669Z",
+    "actor": {
+        "url": "https://plus.google.com/111415681122206252267",
+        "image": {
+            "url": "https://lh3.googleusercontent.com/-PlbEGa3K3j4/AAAAAAAAAAI/AAAAAAAAAAA/m6K0pSyg7CM/photo.jpg?sz=50"
+        },
+        "displayName": "Bayu Adji",
+        "id": "111415681122206252267",
+        "name": {
+            "givenName": "Bayu",
+            "familyName": "Adji"
+        }
+    },
+    "access": {
+        "items": [
+            {
+                "type": "public"
+            },
+            {
+                "type": "person",
+                "id": "111415681122206252267"
+            }
+        ],
+        "kind": "plus#acl"
+    },
+    "verb": "post",
+    "etag": "\"16PodAIGww7iC6r2PJol9nE39w4/pJzJtKccgdai7qxAzb4neKkUedU\"",
+    "published": "2012-08-22T22:19:42.000Z",
+    "crosspostSource": "oz:111415681122206252267.139506b444d.0",
+    "id": "z12tzvdrlxmlz3d4f04cghrx2lvsdbgaeys0k"
+}

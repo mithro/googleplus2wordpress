@@ -1,0 +1,72 @@
+{
+    "kind": "plus#activity",
+    "provider": {
+        "title": "Google+"
+    },
+    "title": "",
+    "url": "https://plus.google.com/111415681122206252267/posts/CDnubx5bqy8",
+    "object": {
+        "resharers": {
+            "totalItems": 0,
+            "selfLink": "https://www.googleapis.com/plus/v1/activities/z13nzr2pfqbrxb2m3233hzcoiy2dv1mrq04/people/resharers"
+        },
+        "attachments": [
+            {
+                "displayName": "Python 101",
+                "url": "http://www.vimeo.com/20743963",
+                "image": {
+                    "url": "https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=http%3A%2F%2Fb.vimeocdn.com%2Fts%2F132%2F870%2F132870511_200.jpg",
+                    "type": "image/jpeg"
+                },
+                "content": "Learn to program in python in less than 30 minutes.",
+                "embed": {
+                    "url": "https://vimeo.com/moogaloop.swf?clip_id=20743963&server=vimeo.com&show_title=1&show_byline=1&show_portrait=0&fullscreen=1&autoplay=1",
+                    "type": "application/x-shockwave-flash"
+                },
+                "objectType": "video"
+            }
+        ],
+        "originalContent": "",
+        "url": "https://plus.google.com/111415681122206252267/posts/CDnubx5bqy8",
+        "content": "",
+        "plusoners": {
+            "totalItems": 0,
+            "selfLink": "https://www.googleapis.com/plus/v1/activities/z13nzr2pfqbrxb2m3233hzcoiy2dv1mrq04/people/plusoners"
+        },
+        "replies": {
+            "totalItems": 0,
+            "selfLink": "https://www.googleapis.com/plus/v1/activities/z13nzr2pfqbrxb2m3233hzcoiy2dv1mrq04/comments"
+        },
+        "objectType": "note"
+    },
+    "updated": "2012-08-22T22:18:31.715Z",
+    "actor": {
+        "url": "https://plus.google.com/111415681122206252267",
+        "image": {
+            "url": "https://lh3.googleusercontent.com/-PlbEGa3K3j4/AAAAAAAAAAI/AAAAAAAAAAA/m6K0pSyg7CM/photo.jpg?sz=50"
+        },
+        "displayName": "Bayu Adji",
+        "id": "111415681122206252267",
+        "name": {
+            "givenName": "Bayu",
+            "familyName": "Adji"
+        }
+    },
+    "access": {
+        "items": [
+            {
+                "type": "public"
+            },
+            {
+                "type": "person",
+                "id": "111415681122206252267"
+            }
+        ],
+        "kind": "plus#acl"
+    },
+    "verb": "post",
+    "etag": "\"16PodAIGww7iC6r2PJol9nE39w4/bkLuS69LyyLdAWInZNQf8-deC_o\"",
+    "published": "2012-08-22T22:18:31.000Z",
+    "crosspostSource": "oz:111415681122206252267.139506a3df4.0",
+    "id": "z13nzr2pfqbrxb2m3233hzcoiy2dv1mrq04"
+}

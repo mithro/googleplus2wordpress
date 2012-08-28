@@ -123,6 +123,7 @@ def embed_content(url):
     try:
         response = OEMBED_CONSUMER.embed(url)
         data = response.getData()
+    
         return data
     except IOError, e:
         return False

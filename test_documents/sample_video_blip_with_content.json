@@ -1,0 +1,75 @@
+{
+    "kind": "plus#activity",
+    "provider": {
+        "title": "Google+"
+    },
+    "title": "Great talk (for a Python newbie here).\n\nPS: Don't talk slower -- life is short :)",
+    "url": "https://plus.google.com/111415681122206252267/posts/eXVC5mmtA8R",
+    "object": {
+        "resharers": {
+            "totalItems": 0,
+            "selfLink": "https://www.googleapis.com/plus/v1/activities/z12pdnhwcquozjfb004cghrx2lvsdbgaeys0k/people/resharers"
+        },
+        "attachments": [
+            {
+                "content": "Doug Hellmann This presentation covers features of the standard library not widely known or used. Each feature is presented with a short demonstration program and explanation.",
+                "url": "http://blip.tv/pycon-us-videos-2009-2010-2011/pycon-2011-hidden-treasures-in-the-standard-library-4901130",
+                "displayName": "PyCon 2011: Hidden Treasures in the Standard Library",
+                "objectType": "article"
+            },
+            {
+                "image": {
+                    "url": "https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=http%3A%2F%2Fa.images.blip.tv%2FPycon-PyCon2011HiddenTreasuresInTheStandardLibrary179-925.jpg",
+                    "type": "image/jpeg"
+                },
+                "fullImage": {
+                    "url": "http://blip.tv/pycon-us-videos-2009-2010-2011/pycon-2011-hidden-treasures-in-the-standard-library-4901130",
+                    "type": "image/jpeg"
+                },
+                "objectType": "photo"
+            }
+        ],
+        "originalContent": "",
+        "url": "https://plus.google.com/111415681122206252267/posts/eXVC5mmtA8R",
+        "content": "Great talk (for a Python newbie here).<br /><br />PS: Don&#39;t talk slower -- life is short :)",
+        "plusoners": {
+            "totalItems": 0,
+            "selfLink": "https://www.googleapis.com/plus/v1/activities/z12pdnhwcquozjfb004cghrx2lvsdbgaeys0k/people/plusoners"
+        },
+        "replies": {
+            "totalItems": 0,
+            "selfLink": "https://www.googleapis.com/plus/v1/activities/z12pdnhwcquozjfb004cghrx2lvsdbgaeys0k/comments"
+        },
+        "objectType": "note"
+    },
+    "updated": "2012-08-22T22:22:10.396Z",
+    "actor": {
+        "url": "https://plus.google.com/111415681122206252267",
+        "image": {
+            "url": "https://lh3.googleusercontent.com/-PlbEGa3K3j4/AAAAAAAAAAI/AAAAAAAAAAA/m6K0pSyg7CM/photo.jpg?sz=50"
+        },
+        "displayName": "Bayu Adji",
+        "id": "111415681122206252267",
+        "name": {
+            "givenName": "Bayu",
+            "familyName": "Adji"
+        }
+    },
+    "access": {
+        "items": [
+            {
+                "type": "public"
+            },
+            {
+                "type": "person",
+                "id": "111415681122206252267"
+            }
+        ],
+        "kind": "plus#acl"
+    },
+    "verb": "post",
+    "etag": "\"16PodAIGww7iC6r2PJol9nE39w4/jFX453nDH_NquipNAhUACX-DD2s\"",
+    "published": "2012-08-22T22:22:10.000Z",
+    "crosspostSource": "oz:111415681122206252267.139506d95c1.0",
+    "id": "z12pdnhwcquozjfb004cghrx2lvsdbgaeys0k"
+}
