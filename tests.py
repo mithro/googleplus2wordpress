@@ -162,7 +162,46 @@ class TestMultiple(TestGooglePost):
               u'author_url': u'https://picasaweb.google.com/111415681122206252267'}
             ])
 
-        result = """<a href="https://lh5.googleusercontent.com/-PIH6HJqexW4/UDenK9zqRuI/AAAAAAAAAO8/jSa81lHtd_s/s640/images.jpg"\n          id="plus_gallery_"\n          onclick="return hs.expand(this, { autoplay: false, slideshowGroup: \'plus_gallery_\' })"\n          class="highslide">\n          <img src="https://lh5.googleusercontent.com/-PIH6HJqexW4/UDenK9zqRuI/AAAAAAAAAO8/jSa81lHtd_s/s640/images.jpg"\n              id="plus_gallery__0"\n              class="shashinThumbnailImage"\n              alt="images.jpg"\n              title="images.jpg"\n              />\n      </a>\n    \n  \n\n  \n\n\n  \n\n  \n    \n      <a href="https://lh4.googleusercontent.com/-PCvDAIT1nBc/UDenNq2SR4I/AAAAAAAAAPE/ez9G23m6HfY/s640/klingon.jpg"\n          id="plus_gallery_"\n          onclick="return hs.expand(this, { autoplay: false, slideshowGroup: \'plus_gallery_\' })"\n          class="highslide">\n          <img src="https://lh4.googleusercontent.com/-PCvDAIT1nBc/UDenNq2SR4I/AAAAAAAAAPE/ez9G23m6HfY/s640/klingon.jpg"\n              id="plus_gallery__1"\n              class="shashinThumbnailImage"\n              alt="klingon.jpg"\n              title="klingon.jpg"\n              />\n      </a>\n    \n  \n\n  \n\n\n</div>\n<script type="text/javascript">addHSSlideshow(\'plus_gallery_\');</script>"""
+        result = """<a href="https://lh5.googleusercontent.com/-PIH6HJqexW4/UDenK9zqRuI/AAAAAAAAAO8/jSa81lHtd_s/s640/images.jpg"
+          id="plus_gallery_"
+          onclick="return hs.expand(this, { autoplay: false, slideshowGroup: \'plus_gallery_\' })"
+          class="highslide">
+          <img src="https://lh5.googleusercontent.com/-PIH6HJqexW4/UDenK9zqRuI/AAAAAAAAAO8/jSa81lHtd_s/s640/images.jpg"
+              id="plus_gallery__0"
+              class="shashinThumbnailImage"
+              alt="images.jpg"
+              title="images.jpg"
+              />
+      </a>
+    
+  
+
+  
+
+
+  
+
+  
+    
+      <a href="https://lh4.googleusercontent.com/-PCvDAIT1nBc/UDenNq2SR4I/AAAAAAAAAPE/ez9G23m6HfY/s640/klingon.jpg"
+          id="plus_gallery_"
+          onclick="return hs.expand(this, { autoplay: false, slideshowGroup: \'plus_gallery_\' })"
+          class="highslide">
+          <img src="https://lh4.googleusercontent.com/-PCvDAIT1nBc/UDenNq2SR4I/AAAAAAAAAPE/ez9G23m6HfY/s640/klingon.jpg"
+              id="plus_gallery__1"
+              class="shashinThumbnailImage"
+              alt="klingon.jpg"
+              title="klingon.jpg"
+              />
+      </a>
+    
+  
+
+  
+
+
+</div>
+<script type="text/javascript">addHSSlideshow(\'plus_gallery_\');</script>"""
         self.do_test_equal(Post, 'sample_multi_img.json', result)
 
     def test_multiple_videos(self):
@@ -173,7 +212,7 @@ class TestMultiple(TestGooglePost):
             u'provider_url': u'http://picasaweb.google.com/',
             u'title': u'20051210-w50s.flv',
             u'type': u'video',
-            u'html': u'\n<iframe src="picasaweb-oembed.appspot.com/static/embed.html#user/111415681122206252267/albumid/5780283745281083937/photoid/5780283748382925602" style="width: 100%; height: 100%;" ></iframe>\n',
+            u'html': u'iframe src="picasaweb-oembed.appspot.com/static/embed.html#user/111415681122206252267/albumid/5780283745281083937/photoid/5780283748382925602" style="width: 100%; height: 100%;" ></iframe>',
             u'author_name': u'Bayu Adji',
             u'height': 360,
             u'width': 480,
@@ -187,7 +226,7 @@ class TestMultiple(TestGooglePost):
             {u'provider_url': u'http://picasaweb.google.com/',
             u'title': u'20051210-w50s.flv',
             u'type': u'video',
-            u'html': u'\n<iframe src="picasaweb-oembed.appspot.com/static/embed.html#user/111415681122206252267/albumid/5780283745281083937/photoid/5780284895649435186" style="width: 100%; height: 100%;" ></iframe>\n',
+            u'html': u'iframe src="picasaweb-oembed.appspot.com/static/embed.html#user/111415681122206252267/albumid/5780283745281083937/photoid/5780284895649435186" style="width: 100%; height: 100%;" ></iframe>',
             u'author_name': u'Bayu Adji',
             u'height': 360,
             u'width': 480,
@@ -199,7 +238,52 @@ class TestMultiple(TestGooglePost):
             u'thumbnail_height': 360,
             u'author_url': u'https://picasaweb.google.com/111415681122206252267'}])
 
-        result = """<a href="#"\n          id="plus_gallery_"\n          onclick="return hs.expand(this, { autoplay: false, slideshowGroup: \'plus_gallery_\' })"\n          class="highslide">\n          <img src="https://lh4.googleusercontent.com/-MfJNeumzCbI/UDexcaNT4yI/AAAAAAAAATk/Y8u9gA4k9Wc/s640/20051210-w50s.flv.jpg"\n              id="plus_gallery__0"\n              class="shashinThumbnailImage"\n              alt="20051210-w50s.flv"\n              title="20051210-w50s.flv"\n              />\n      </a>\n      <div class="highslide-maincontent">\n      \n<iframe src="picasaweb-oembed.appspot.com/static/embed.html#user/111415681122206252267/albumid/5780283745281083937/photoid/5780283748382925602" style="width: 100%; height: 100%;" ></iframe>\n\n      </div>\n    \n  \n\n  \n\n\n  \n\n  \n    \n      <a href="#"\n          id="plus_gallery_"\n          onclick="return hs.expand(this, { autoplay: false, slideshowGroup: \'plus_gallery_\' })"\n          class="highslide">\n          <img src="https://lh5.googleusercontent.com/-lLhNdxwVedw/UDeyfMG9jjI/AAAAAAAAASA/SEEauN4dP3M/s640/20051210-w50s.flv.jpg"\n              id="plus_gallery__1"\n              class="shashinThumbnailImage"\n              alt="20051210-w50s.flv"\n              title="20051210-w50s.flv"\n              />\n      </a>\n      <div class="highslide-maincontent">\n      \n<iframe src="picasaweb-oembed.appspot.com/static/embed.html#user/111415681122206252267/albumid/5780283745281083937/photoid/5780284895649435186" style="width: 100%; height: 100%;" ></iframe>\n\n      </div>\n    \n  \n\n  \n\n\n</div>\n<script type="text/javascript">addHSSlideshow(\'plus_gallery_\');</script>"""
+        result = """<a href="#"
+          id="plus_gallery_"
+          onclick="return hs.expand(this, { autoplay: false, slideshowGroup: \'plus_gallery_\' })"
+          class="highslide">
+          <img src="https://lh4.googleusercontent.com/-MfJNeumzCbI/UDexcaNT4yI/AAAAAAAAATk/Y8u9gA4k9Wc/s640/20051210-w50s.flv.jpg"
+              id="plus_gallery__0"
+              class="shashinThumbnailImage"
+              alt="20051210-w50s.flv"
+              title="20051210-w50s.flv"
+              />
+      </a>
+      <div class="highslide-maincontent">
+      iframe src="picasaweb-oembed.appspot.com/static/embed.html#user/111415681122206252267/albumid/5780283745281083937/photoid/5780283748382925602" style="width: 100%; height: 100%;" ></iframe>
+      </div>
+    
+  
+
+  
+
+
+  
+
+  
+    
+      <a href="#"
+          id="plus_gallery_"
+          onclick="return hs.expand(this, { autoplay: false, slideshowGroup: \'plus_gallery_\' })"
+          class="highslide">
+          <img src="https://lh5.googleusercontent.com/-lLhNdxwVedw/UDeyfMG9jjI/AAAAAAAAASA/SEEauN4dP3M/s640/20051210-w50s.flv.jpg"
+              id="plus_gallery__1"
+              class="shashinThumbnailImage"
+              alt="20051210-w50s.flv"
+              title="20051210-w50s.flv"
+              />
+      </a>
+      <div class="highslide-maincontent">
+      iframe src="picasaweb-oembed.appspot.com/static/embed.html#user/111415681122206252267/albumid/5780283745281083937/photoid/5780284895649435186" style="width: 100%; height: 100%;" ></iframe>
+      </div>
+    
+  
+
+  
+
+
+</div>
+<script type="text/javascript">addHSSlideshow(\'plus_gallery_\');</script>"""
         self.do_test_equal(Post, 'sample_multi_vid.json', result)
 
     def test_single_linked(self):
@@ -218,7 +302,24 @@ class TestMultiple(TestGooglePost):
              "thumbnail_height": 322}
             ])
 
-        result = """<h4><a href="http://blog.freshdesk.com/the-freshdesk-story-how-a-simple-comment-on-h-0/#.UDe240hoWHd">The Freshdesk Story - Girish talks about the evolution of his Online Helpdesk Software</a></h4>\n\n<table>\n  <tr>\n    <td>\n\n      <blockquote cite="http://blog.freshdesk.com/the-freshdesk-story-how-a-simple-comment-on-h-0/#.UDe240hoWHd">\n        Bio My name is Girish Mathrubootham and I am the Founder and CEO of Freshdesk. I am 36 years old, married and live with my wife and two boys in Chennai, India. This is the story of how I quit my comfortable job and launched my own startup. Hope you like it.\n      </blockquote>\n\n    </td>\n    <td>\n  \n      <img src=\'http://50.116.32.94/wp-content/uploads/2011/03/freshdesk_story.png\'>\n  \n    </td>\n  </tr>\n</table>"""
+        result = """<h4><a href="http://blog.freshdesk.com/the-freshdesk-story-how-a-simple-comment-on-h-0/#.UDe240hoWHd">The Freshdesk Story - Girish talks about the evolution of his Online Helpdesk Software</a></h4>
+
+<table>
+  <tr>
+    <td>
+
+      <blockquote cite="http://blog.freshdesk.com/the-freshdesk-story-how-a-simple-comment-on-h-0/#.UDe240hoWHd">
+        Bio My name is Girish Mathrubootham and I am the Founder and CEO of Freshdesk. I am 36 years old, married and live with my wife and two boys in Chennai, India. This is the story of how I quit my comfortable job and launched my own startup. Hope you like it.
+      </blockquote>
+
+    </td>
+    <td>
+  
+      <img src=\'http://50.116.32.94/wp-content/uploads/2011/03/freshdesk_story.png\'>
+  
+    </td>
+  </tr>
+</table>"""
 
         self.do_test_equal(WebPagePost, 'sample_webpage.json', result)
 
@@ -300,7 +401,46 @@ class TestMultipleContent(TestGooglePost):
              u'author_url': u'https://picasaweb.google.com/111415681122206252267'}
             ])
 
-        result = """<a href="https://lh5.googleusercontent.com/-lUEEBO4q1x0/UDeqmyEKtkI/AAAAAAAAAP4/mdmjzbPyKyw/s640/klingon.jpg"\n          id="plus_gallery_"\n          onclick="return hs.expand(this, { autoplay: false, slideshowGroup: \'plus_gallery_\' })"\n          class="highslide">\n          <img src="https://lh5.googleusercontent.com/-lUEEBO4q1x0/UDeqmyEKtkI/AAAAAAAAAP4/mdmjzbPyKyw/s640/klingon.jpg"\n              id="plus_gallery__0"\n              class="shashinThumbnailImage"\n              alt="klingon.jpg"\n              title="klingon.jpg"\n              />\n      </a>\n    \n  \n\n  \n\n\n  \n\n  \n    \n      <a href="https://lh5.googleusercontent.com/-EwsGU3ab370/UDeqvIpR_XI/AAAAAAAAAQA/k_ENNAjp8TQ/s640/IMG-20120708-00039.jpg"\n          id="plus_gallery_"\n          onclick="return hs.expand(this, { autoplay: false, slideshowGroup: \'plus_gallery_\' })"\n          class="highslide">\n          <img src="https://lh5.googleusercontent.com/-EwsGU3ab370/UDeqvIpR_XI/AAAAAAAAAQA/k_ENNAjp8TQ/s640/IMG-20120708-00039.jpg"\n              id="plus_gallery__1"\n              class="shashinThumbnailImage"\n              alt="IMG-20120708-00039.jpg"\n              title="IMG-20120708-00039.jpg"\n              />\n      </a>\n    \n  \n\n  \n\n\n</div>\n<script type="text/javascript">addHSSlideshow(\'plus_gallery_\');</script>"""
+        result = """<a href="https://lh5.googleusercontent.com/-lUEEBO4q1x0/UDeqmyEKtkI/AAAAAAAAAP4/mdmjzbPyKyw/s640/klingon.jpg"
+          id="plus_gallery_"
+          onclick="return hs.expand(this, { autoplay: false, slideshowGroup: \'plus_gallery_\' })"
+          class="highslide">
+          <img src="https://lh5.googleusercontent.com/-lUEEBO4q1x0/UDeqmyEKtkI/AAAAAAAAAP4/mdmjzbPyKyw/s640/klingon.jpg"
+              id="plus_gallery__0"
+              class="shashinThumbnailImage"
+              alt="klingon.jpg"
+              title="klingon.jpg"
+              />
+      </a>
+    
+  
+
+  
+
+
+  
+
+  
+    
+      <a href="https://lh5.googleusercontent.com/-EwsGU3ab370/UDeqvIpR_XI/AAAAAAAAAQA/k_ENNAjp8TQ/s640/IMG-20120708-00039.jpg"
+          id="plus_gallery_"
+          onclick="return hs.expand(this, { autoplay: false, slideshowGroup: \'plus_gallery_\' })"
+          class="highslide">
+          <img src="https://lh5.googleusercontent.com/-EwsGU3ab370/UDeqvIpR_XI/AAAAAAAAAQA/k_ENNAjp8TQ/s640/IMG-20120708-00039.jpg"
+              id="plus_gallery__1"
+              class="shashinThumbnailImage"
+              alt="IMG-20120708-00039.jpg"
+              title="IMG-20120708-00039.jpg"
+              />
+      </a>
+    
+  
+
+  
+
+
+</div>
+<script type="text/javascript">addHSSlideshow(\'plus_gallery_\');</script>"""
         self.do_test_equal(Post, 'sample_multi_img_with_content.json', result)
 
     def test_multiple_videos(self):
@@ -310,7 +450,7 @@ class TestMultipleContent(TestGooglePost):
             {u'provider_url': u'http://picasaweb.google.com/',
              u'title': u'20051210-w50s.flv',
              u'type': u'video',
-             u'html': u'\n<iframe src="picasaweb-oembed.appspot.com/static/embed.html#user/111415681122206252267/albumid/5780283745281083937/photoid/5780283748382925602" style="width: 100%; height: 100%;" ></iframe>\n',
+             u'html': u'<iframe src="picasaweb-oembed.appspot.com/static/embed.html#user/111415681122206252267/albumid/5780283745281083937/photoid/5780283748382925602" style="width: 100%; height: 100%;" ></iframe>',
              u'author_name': u'Bayu Adji',
              u'height': 360,
              u'width': 480,
@@ -324,7 +464,7 @@ class TestMultipleContent(TestGooglePost):
             {u'provider_url': u'http://picasaweb.google.com/',
              u'title': u'20051210-w50s.flv',
              u'type': u'video',
-             u'html': u'\n<iframe src="picasaweb-oembed.appspot.com/static/embed.html#user/111415681122206252267/albumid/5780283745281083937/photoid/5780284895649435186" style="width: 100%; height: 100%;" ></iframe>\n',
+             u'html': u'<iframe src="picasaweb-oembed.appspot.com/static/embed.html#user/111415681122206252267/albumid/5780283745281083937/photoid/5780284895649435186" style="width: 100%; height: 100%;" ></iframe>',
              u'author_name': u'Bayu Adji',
              u'height': 360,
              u'width': 480,
@@ -336,13 +476,75 @@ class TestMultipleContent(TestGooglePost):
              u'thumbnail_height': 360,
              u'author_url': u'https://picasaweb.google.com/111415681122206252267'}
             ])
-        result = """<a href="#"\n          id="plus_gallery_"\n          onclick="return hs.expand(this, { autoplay: false, slideshowGroup: \'plus_gallery_\' })"\n          class="highslide">\n          <img src="https://lh4.googleusercontent.com/-MfJNeumzCbI/UDexcaNT4yI/AAAAAAAAATk/Y8u9gA4k9Wc/s640/20051210-w50s.flv.jpg"\n              id="plus_gallery__0"\n              class="shashinThumbnailImage"\n              alt="20051210-w50s.flv"\n              title="20051210-w50s.flv"\n              />\n      </a>\n      <div class="highslide-maincontent">\n      \n<iframe src="picasaweb-oembed.appspot.com/static/embed.html#user/111415681122206252267/albumid/5780283745281083937/photoid/5780283748382925602" style="width: 100%; height: 100%;" ></iframe>\n\n      </div>\n    \n  \n\n  \n\n\n  \n\n  \n    \n      <a href="#"\n          id="plus_gallery_"\n          onclick="return hs.expand(this, { autoplay: false, slideshowGroup: \'plus_gallery_\' })"\n          class="highslide">\n          <img src="https://lh5.googleusercontent.com/-lLhNdxwVedw/UDeyfMG9jjI/AAAAAAAAASA/SEEauN4dP3M/s640/20051210-w50s.flv.jpg"\n              id="plus_gallery__1"\n              class="shashinThumbnailImage"\n              alt="20051210-w50s.flv"\n              title="20051210-w50s.flv"\n              />\n      </a>\n      <div class="highslide-maincontent">\n      \n<iframe src="picasaweb-oembed.appspot.com/static/embed.html#user/111415681122206252267/albumid/5780283745281083937/photoid/5780284895649435186" style="width: 100%; height: 100%;" ></iframe>\n\n      </div>\n    \n  \n\n  \n\n\n</div>\n<script type="text/javascript">addHSSlideshow(\'plus_gallery_\');</script>"""
+        result = """<a href="#"
+          id="plus_gallery_"
+          onclick="return hs.expand(this, { autoplay: false, slideshowGroup: \'plus_gallery_\' })"
+          class="highslide">
+          <img src="https://lh4.googleusercontent.com/-MfJNeumzCbI/UDexcaNT4yI/AAAAAAAAATk/Y8u9gA4k9Wc/s640/20051210-w50s.flv.jpg"
+              id="plus_gallery__0"
+              class="shashinThumbnailImage"
+              alt="20051210-w50s.flv"
+              title="20051210-w50s.flv"
+              />
+      </a>
+      <div class="highslide-maincontent">
+      <iframe src="picasaweb-oembed.appspot.com/static/embed.html#user/111415681122206252267/albumid/5780283745281083937/photoid/5780283748382925602" style="width: 100%; height: 100%;" ></iframe>
+      </div>
+    
+  
+
+  
+
+
+  
+
+  
+    
+      <a href="#"
+          id="plus_gallery_"
+          onclick="return hs.expand(this, { autoplay: false, slideshowGroup: \'plus_gallery_\' })"
+          class="highslide">
+          <img src="https://lh5.googleusercontent.com/-lLhNdxwVedw/UDeyfMG9jjI/AAAAAAAAASA/SEEauN4dP3M/s640/20051210-w50s.flv.jpg"
+              id="plus_gallery__1"
+              class="shashinThumbnailImage"
+              alt="20051210-w50s.flv"
+              title="20051210-w50s.flv"
+              />
+      </a>
+      <div class="highslide-maincontent">
+      <iframe src="picasaweb-oembed.appspot.com/static/embed.html#user/111415681122206252267/albumid/5780283745281083937/photoid/5780284895649435186" style="width: 100%; height: 100%;" ></iframe>
+      </div>
+    
+  
+
+  
+
+
+</div>
+<script type="text/javascript">addHSSlideshow(\'plus_gallery_\');</script>"""
         self.do_test_equal(Post, 'sample_multi_vid.json', result)
 
     def test_single_linked(self):
         from plus import WebPagePost
 
-        result = """<h4><a href="http://antjanus.com/blog/web-design-tips/user-interface-usability/customize-twitter-bootstrap-into-themes/">Customize Twitter Bootstrap To Not Look Bootstrap-y - Aj freelancer</a></h4>\n\n<table>\n  <tr>\n    <td>\n\n      <blockquote cite="http://antjanus.com/blog/web-design-tips/user-interface-usability/customize-twitter-bootstrap-into-themes/">\n        PLEASE, if you do use Bootstrap for just about everything be courteous to your audience and change up some of the basic variables so it doesn\'t look all the same! I just tested a really cool app and was SO disappointed that it used bootstrap. I\'m sick of seeing the same damn buttons.\n      </blockquote>\n\n    </td>\n    <td>\n  \n      <img src=\'http://antjanus.com/assets/bootstrap-1024x421.png\'>\n  \n    </td>\n  </tr>\n</table>"""
+        result = """<h4><a href="http://antjanus.com/blog/web-design-tips/user-interface-usability/customize-twitter-bootstrap-into-themes/">Customize Twitter Bootstrap To Not Look Bootstrap-y - Aj freelancer</a></h4>
+
+<table>
+  <tr>
+    <td>
+
+      <blockquote cite="http://antjanus.com/blog/web-design-tips/user-interface-usability/customize-twitter-bootstrap-into-themes/">
+        PLEASE, if you do use Bootstrap for just about everything be courteous to your audience and change up some of the basic variables so it doesn\'t look all the same! I just tested a really cool app and was SO disappointed that it used bootstrap. I\'m sick of seeing the same damn buttons.
+      </blockquote>
+
+    </td>
+    <td>
+  
+      <img src=\'http://antjanus.com/assets/bootstrap-1024x421.png\'>
+  
+    </td>
+  </tr>
+</table>"""
 
         self.mock_embedly([
             {"provider_url": "http://antjanus.com",
@@ -382,7 +584,14 @@ class TestUtils(TestGooglePost):
 class TestGeocode(TestGooglePost):
     def test_post(self):
         from plus import PhotoPost
-        result = """\n<div class="geocode">\n    <a href="http://maps.google.com/?ll=-7.3588039,106.4051172&q=-7.3588039,106.4051172">\n        <img src="http://maps.googleapis.com/maps/api/staticmap?center=-7.3588039,106.4051172&zoom=12&size=75x75&maptype=roadmap&markers=size:small|color:red|-7.3588039,106.4051172&sensor=false" class="alignleft">\n        \n        \n    </a>\n</div>"""
+        result = """
+<div class="geocode">
+    <a href="http://maps.google.com/?ll=-7.3588039,106.4051172&q=-7.3588039,106.4051172">
+        <img src="http://maps.googleapis.com/maps/api/staticmap?center=-7.3588039,106.4051172&zoom=12&size=75x75&maptype=roadmap&markers=size:small|color:red|-7.3588039,106.4051172&sensor=false" class="alignleft">
+        
+        
+    </a>
+</div>"""
         self.do_test_equal(PhotoPost, 'pic_with_geocode.json', result, 'render_geocode')
 
 
