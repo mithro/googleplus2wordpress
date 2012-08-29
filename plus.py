@@ -123,9 +123,10 @@ def embed_content(url):
     try:
         response = OEMBED_CONSUMER.embed(url)
         data = response.getData()
-    
+
         return data
     except IOError, e:
+        print e
         return False
 
 
@@ -307,7 +308,7 @@ class WebPagePost(GooglePlusPost):
 
         edata = embed_content(webpage['url'])
         if FLAGS.verbose:
-            print "Embedly data"
+            print "Embedly data for '%s'" % webpage['url']
             pprint.pprint(edata)
 
         if not self.title and edata['title']:
@@ -329,12 +330,28 @@ class PhotoPost(GooglePlusPost):
 
     def render(self):
         obj = self.gdata['object']['attachments'][0]
+
+        try:
+            preview_url = obj['image']['url']
+            full_url = obj['fullImage']['url']
+            content = obj['fullImage'].get('content', '')
+        except KeyError:
+            edata = embed_content(obj['url'])
+            if FLAGS.verbose:
+                print "Embedly data for '%s'" % obj['url']
+                pprint.pprint(edata)
+            assert edata, "No Embedly data for %s" % obj['url']
+
+            if not self.title and edata.get('title', None):
+                self.title = edata['title']
+
+            preview_url = edata.get('thumbnail_url', obj['url'])
+            full_url = obj['url']
+            content = edata.get('description', '')
+
         self.content = """
 <img class="alignnone" src="%(preview_url)s" alt="%(content)s">
-""" % {'preview_url': obj['image']['url'],
-       'url': obj['fullImage']['url'],
-       'content': obj['fullImage'].get('content', ''),
-       }
+""" % locals()
 
 
 GooglePlusPost.TYPE2CLASS['photo'] = PhotoPost
