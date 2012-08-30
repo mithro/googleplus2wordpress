@@ -569,7 +569,6 @@ def main(argv):
                             wp.call(NewAnonymousComment(found.id, publishable_comment))
 
                         # See https://github.com/maxcutler/python-wordpress-xmlrpc/pull/35
-                        # http://en.forums.wordpress.com/topic/xml-rpc-anonymous-comments-wordpresscom?replies=18
                         if config.WORDPRESS_COMMENT_STYLE == 'anonymous':
                             wp.call(NewAnonymousComment(found.id, publishable_comment))
                         else:
