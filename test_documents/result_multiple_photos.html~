@@ -1,0 +1,40 @@
+<a href="https://lh5.googleusercontent.com/-PIH6HJqexW4/UDenK9zqRuI/AAAAAAAAAO8/jSa81lHtd_s/s640/images.jpg"
+          id="plus_gallery_"
+          onclick="return hs.expand(this, { autoplay: false, slideshowGroup: \'plus_gallery_\' })"
+          class="highslide">
+          <img src="https://lh5.googleusercontent.com/-PIH6HJqexW4/UDenK9zqRuI/AAAAAAAAAO8/jSa81lHtd_s/s640/images.jpg"
+              id="plus_gallery__0"
+              class="shashinThumbnailImage"
+              alt="images.jpg"
+              title="images.jpg"
+              />
+      </a>
+    
+  
+
+  
+
+
+  
+
+  
+    
+      <a href="https://lh4.googleusercontent.com/-PCvDAIT1nBc/UDenNq2SR4I/AAAAAAAAAPE/ez9G23m6HfY/s640/klingon.jpg"
+          id="plus_gallery_"
+          onclick="return hs.expand(this, { autoplay: false, slideshowGroup: \'plus_gallery_\' })"
+          class="highslide">
+          <img src="https://lh4.googleusercontent.com/-PCvDAIT1nBc/UDenNq2SR4I/AAAAAAAAAPE/ez9G23m6HfY/s640/klingon.jpg"
+              id="plus_gallery__1"
+              class="shashinThumbnailImage"
+              alt="klingon.jpg"
+              title="klingon.jpg"
+              />
+      </a>
+    
+  
+
+  
+
+
+</div>
+<script type="text/javascript">addHSSlideshow(\'plus_gallery_\');</script>
