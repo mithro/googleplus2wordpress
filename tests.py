@@ -89,7 +89,7 @@ class TestPhoto(TestGooglePost):
 
         #we need to strip, since the render add
         result = """<img class="alignnone" src="https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=https%3A%2F%2Flh3.googleusercontent.com%2F-pO-hpo7EM7E%2FTv55RUxDaUI%2FAAAAAAAAAMk%2FW3HP0NZUdjg%2Fw288-h288%2Fcrop.png" alt="">"""
-        self.do_test_equal(PhotoPost, 'pic_with_content.json', result)
+        self.do_test_equal(PhotoPost, 'sample_pic_with_content.json', result)
 
     def test_photo_from_picasa_web(self):
         from plus import PhotoPost
@@ -99,7 +99,7 @@ class TestPhoto(TestGooglePost):
     def test_photo_from_flickr(self):
         from plus import PhotoPost
         result = ''
-        self.do_test_equal(PhotoPost, 'pic_flickr_without_content.json', result)
+        self.do_test_equal(PhotoPost, 'sample_pic_flickr_without_content.json', result)
 
     def test_photo_from_smugmug(self):
         from plus import PhotoPost
@@ -328,7 +328,7 @@ class TestPhotoContent(TestGooglePost):
     def test_photo_from_google_plus(self):
         from plus import PhotoPost
         result = """<img class="alignnone" src="https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=https%3A%2F%2Flh3.googleusercontent.com%2F-pO-hpo7EM7E%2FTv55RUxDaUI%2FAAAAAAAAAMk%2FW3HP0NZUdjg%2Fw288-h288%2Fcrop.png" alt="">"""
-        self.do_test_equal(PhotoPost, 'pic_with_content.json', result)
+        self.do_test_equal(PhotoPost, 'sample_pic_with_content.json', result)
 
     def test_photo_from_picasa_web(self):
         from plus import PhotoPost
@@ -338,7 +338,7 @@ class TestPhotoContent(TestGooglePost):
     def test_photo_from_flickr(self):
         from plus import PhotoPost
         result = ''
-        self.do_test_equal(PhotoPost, 'pic_flickr_with_content.json', result)
+        self.do_test_equal(PhotoPost, 'sample_pic_flickr_with_content.json', result)
 
     def test_photo_from_smugmug(self):
         from plus import PhotoPost
@@ -592,7 +592,7 @@ class TestGeocode(TestGooglePost):
         
     </a>
 </div>"""
-        self.do_test_equal(PhotoPost, 'pic_with_geocode.json', result, 'render_geocode')
+        self.do_test_equal(PhotoPost, 'sample_pic_with_geocode.json', result, 'render_geocode')
 
 
 if __name__ == '__main__':
