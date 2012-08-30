@@ -51,7 +51,7 @@ from oauth2client.tools import run
 
 import html2text
 import nltk
-from wordpress_xmlrpc import Client, WordPressPost
+from wordpress_xmlrpc import Client, WordPressPost, WordPressComment
 from wordpress_xmlrpc.methods import posts
 
 FLAGS = gflags.FLAGS
@@ -189,12 +189,11 @@ class GooglePlusPost(object):
         else:
             return "text"
 
-    def __init__(self, gid, gdata, gcomment):
+    def __init__(self, gid, gdata):
         assert self.TYPE
 
         self.gid = gid
         self.gdata = gdata
-        self.gcomment = gcomment
 
         self.tags = []
         self.media = []
@@ -376,6 +375,13 @@ class TextPost(GooglePlusPost):
 
 GooglePlusPost.TYPE2CLASS['text'] = TextPost
 
+class GooglePlusComment(object):
+
+    def toWordPressComment(self):
+        comment = WordPressComment()
+
+        return comment
+
 ###############################################################################
 
 
@@ -413,7 +419,7 @@ def main(argv):
     try:
         person = service.people().get(userId=FLAGS.user_id).execute(http)
 
-        request = service.activities().list(
+        post_request = service.activities().list(
             userId=person['id'], collection='public')
 
         i = 0
@@ -430,13 +436,13 @@ def main(argv):
             if len(more_posts) == 0:
                 break
 
-        while request is not None:
-            activities_doc = request.execute()
-
+        while post_request is not None:
+            activities_doc = post_request.execute()
             items = sorted(
                 activities_doc.get('items', []),
                 key=lambda x: x["id"]
             )
+
 
             for item in items:
                 if FLAGS.post_id and FLAGS.post_id != item['id']:
@@ -461,7 +467,7 @@ def main(argv):
                 # else, original post
                 else:
                     post = GooglePlusPost.TYPE2CLASS[otype](
-                        item['id'], item, [])
+                        item['id'], item)
                     if FLAGS.verbose:
                         print repr((post.title, post.has_content, otype))
                         print "=" * 80
@@ -508,8 +514,21 @@ def main(argv):
                             print "Updating existing post"
                         wp.call(posts.EditPost(found.id, publishable_post))
 
-                request = service.activities().list_next(
-                              request, activities_doc
+                # Comments
+                if item['object']['replies']['totalItems'] > 0:
+                    comments_request = service.comments().list(maxResults=100, activityId=item['id'])
+                    comments_document = comments_request.execute()
+
+                    for comment in comments_document['items']:
+                        print comment
+                        # {u'kind': u'plus#commentFeed', u'title': u'Plus Comments Feed for I also wish blogger...', u'items': [{u'inReplyTo': [{u'url': u'https://plus.google.com/114910530124691879879/posts/LcjMiCqUuTC', u'id': u'z12ftf4qivyvvdcvp23yw3wwioqny3vxq04'}], u'kind': u'plus#comment', u'object': {u'content': u'definitely there should be a stream feature between google+ and blogger...I have to share posts from my buzz stream to get them here.', u'objectType': u'comment'}, u'updated': u'2011-09-08T08:13:21.347Z', u'actor': {u'url': u'https://plus.google.com/105284822239271942810', u'image': {u'url': u'https://lh5.googleusercontent.com/-VdCRq1F7oCY/AAAAAAAAAAI/AAAAAAAAAAA/v-rf9JAjwJU/photo.jpg?sz=50'}, u'displayName': u'Niall Campbell', u'id': u'105284822239271942810'}, u'verb': u'post', u'etag': u'"nmfNiti6wB5DqCmkKSnle50Q36k/q56lgFRr5InC_TyvaJGjZtMqYkc"', u'published': u'2011-09-08T08:13:21.347Z', u'id': u'riUbYPyAG7B8Q47ckxdSFxHXsfcLN7dtPqWn7iij45N_DOXGJKSsKjPtxmduM3eBMdOajasQKRk', u'selfLink': u'https://www.googleapis.com/plus/v1/comments/riUbYPyAG7B8Q47ckxdSFxHXsfcLN7dtPqWn7iij45N_DOXGJKSsKjPtxmduM3eBMdOajasQKRk'}], u'updated': u'2011-09-08T08:13:21.347Z', u'etag': u'"nmfNiti6wB5DqCmkKSnle50Q36k/6EfWXl5iDdCNZS20jyCEwyAVVIk"', u'id': u'tag:google.com,2010:/plus/activities/z12ftf4qivyvvdcvp23yw3wwioqny3vxq04/comments'}
+
+                        #raise "HI"
+
+
+
+                post_request = service.activities().list_next(
+                              post_request, activities_doc
                           )
             break
 
