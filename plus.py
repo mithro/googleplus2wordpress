@@ -51,7 +51,8 @@ from oauth2client.tools import run
 
 import html2text
 import nltk
-from wordpress_xmlrpc import Client, WordPressPost, WordPressComment, AnonymousMethod
+from wordpress_xmlrpc import Client, WordPressPost
+from wordpress_xmlrpc import WordPressComment, AnonymousMethod
 from wordpress_xmlrpc.methods import posts, comments
 
 FLAGS = gflags.FLAGS
@@ -81,8 +82,8 @@ with information from the APIs Console <https://code.google.com/apis/console>.
 
 """ % os.path.join(os.path.dirname(__file__), CLIENT_SECRETS)
 FLOW = flow_from_clientsecrets(CLIENT_SECRETS,
-    scope='https://www.googleapis.com/auth/plus.me',
-    message=MISSING_CLIENT_SECRETS_MESSAGE)
+                               scope='https://www.googleapis.com/auth/plus.me',
+                               message=MISSING_CLIENT_SECRETS_MESSAGE)
 
 
 # Code to get more information about posted contents using oembed protocol
@@ -95,19 +96,22 @@ OEMBED_CONSUMER.addEndpoint(
     oembed.OEmbedEndpoint(
         'http://picasaweb-oembed.appspot.com/oembed',
         ['http://picasaweb.google.com/*',
-             'https://picasaweb.google.com/*',
-             'http://plus.google.com/photos/*',
-             'https://plus.google.com/photos/*'])
-    )
+         'https://picasaweb.google.com/*',
+         'http://plus.google.com/photos/*',
+         'https://plus.google.com/photos/*'])
+)
 
 
 class Embedly(oembed.OEmbedEndpoint):
     KEY = False
 
     def __init__(self, key):
-        oembed.OEmbedEndpoint.__init__(self,
+        oembed.OEmbedEndpoint.__init__(
+            self,
             'http://api.embed.ly/1/oembed',
-            ['http://*', 'https://*'])
+            ['http://*', 'https://*']
+        )
+
         self.KEY = key
 
     def request(self, *args, **kw):
@@ -137,7 +141,7 @@ env = Environment(
     loader=FileSystemLoader('templates'),
     comment_start_string='{% comment %}',
     comment_end_string='{% endcomment %}',
-    )
+)
 
 
 def render_tmpl(filename, content):
@@ -146,6 +150,7 @@ def render_tmpl(filename, content):
     template = env.get_template(filename)
     return template.render(**content)
 
+
 # See https://github.com/maxcutler/python-wordpress-xmlrpc/pull/35
 class NewAnonymousComment(AnonymousMethod):
     """
@@ -153,12 +158,14 @@ class NewAnonymousComment(AnonymousMethod):
 
     Parameters:
         `post_id`: The id of the post to add a comment to.
-        `comment`: A :class:`WordPressComment` instance with at least the `content` value set.
+        `comment`: A :class:`WordPressComment` instance with
+                   at least the `content` value set.
 
     Returns: ID of the newly-created comment (an integer).
     """
     method_name = 'wp.newComment'
-    method_args = ('post_id', 'comment')   
+    method_args = ('post_id', 'comment')
+
 
 # Google Plus post types
 ###############################################################################
@@ -292,12 +299,12 @@ class GalleryPost(GooglePlusPost):
                     'thumbnail_url': nobj['image']['url'],
                     'original_url': nobj.get('fullImage', nobj.get(
                         'embed', {'url': '***FIXME***'}))['url'],
-                    })
+                })
 
         self.content = render_tmpl('gallery.html', {
             'gid': self.gid,
             'attachments': tmpl_data,
-            })
+        })
 
 
 GooglePlusPost.TYPE2CLASS['gallery'] = GalleryPost
@@ -387,6 +394,7 @@ class TextPost(GooglePlusPost):
         pass
 
 GooglePlusPost.TYPE2CLASS['text'] = TextPost
+
 
 class GooglePlusComment(object):
 
