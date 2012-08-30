@@ -1,1 +1,12 @@
-[{"provider_url": "http://antjanus.com", "thumbnail_url": "http://antjanus.com/assets/bootstrap-1024x421.png", "description": "PLEASE, if you do use Bootstrap for just about everything be courteous to your audience and change up some of the basic variables so it doesn't look all the same! I just tested a really cool app and was SO disappointed that it used bootstrap. I'm sick of seeing the same damn buttons.", "version": "1.0", "title": "Customize Twitter Bootstrap To Not Look Bootstrap-y - Aj freelancer", "url": "http://antjanus.com/blog/web-design-tips/user-interface-usability/customize-twitter-bootstrap-into-themes/", "provider_name": "Antjanus", "type": "link", "thumbnail_height": 421, "thumbnail_width": 1024}]
+[
+	{"provider_url": "http://antjanus.com", 
+	"thumbnail_url": "http://antjanus.com/assets/bootstrap-1024x421.png", 
+	"description": "PLEASE, if you do use Bootstrap for just about everything be courteous to your audience and change up some of the basic variables so it doesn't look all the same! I just tested a really cool app and was SO disappointed that it used bootstrap. I'm sick of seeing the same damn buttons.", 
+	"version": "1.0", 
+	"title": "Customize Twitter Bootstrap To Not Look Bootstrap-y - Aj freelancer", 
+	"url": "http://antjanus.com/blog/web-design-tips/user-interface-usability/customize-twitter-bootstrap-into-themes/", 
+	"provider_name": "Antjanus", 
+	"type": "link", 
+	"thumbnail_height": 421, 
+	"thumbnail_width": 1024}
+]
