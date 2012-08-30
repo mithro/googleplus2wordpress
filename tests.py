@@ -139,7 +139,7 @@ class TestMultiple(TestGooglePost):
     def test_multiple_photos(self):
         from plus import GalleryPost as Post
 
-        self.mock_embedly(self.load_data('oembed_multiple_photos.json', type='json'))
+        self.mock_embedly(self.load_data('embedly_multiple_photos.json', type='json'))
 
         result = self.load_data("result_multiple_photos.html", type='html')
         self.do_test_equal(Post, 'sample_multi_img.json', result, equal_function='assertMultiLineEqual')
@@ -147,7 +147,7 @@ class TestMultiple(TestGooglePost):
     def test_multiple_videos(self):
         from plus import GalleryPost as Post
 
-        self.mock_embedly(self.load_data("oembed_multiple_videos.json", type='json'))
+        self.mock_embedly(self.load_data("embedly_multiple_videos.json", type='json'))
 
         result = self.load_data('result_multiple_videos.html', type='html')
         self.do_test_equal(Post, 'sample_multi_vid.json', result, equal_function='assertMultiLineEqual')
@@ -155,7 +155,7 @@ class TestMultiple(TestGooglePost):
     def test_single_linked(self):
         from plus import WebPagePost
 
-        self.mock_embedly(self.load_data('oembed_single_linked.json', type='json'))
+        self.mock_embedly(self.load_data('embedly_single_linked.json', type='json'))
 
         result = self.load_data('result_single_linked.html', type='html')
 
@@ -208,7 +208,7 @@ class TestMultipleContent(TestGooglePost):
     def test_multiple_photos(self):
         from plus import GalleryPost as Post
 
-        self.mock_embedly(self.load_data('oembed_multiple_photos_content.json'))
+        self.mock_embedly(self.load_data('embedly_multiple_photos_content.json'))
 
         result = self.load_data('result_multiple_photos_with_content.html', type='html')
         self.do_test_equal(Post, 'sample_multi_img_with_content.json', result, equal_function='assertMultiLineEqual')
@@ -216,7 +216,7 @@ class TestMultipleContent(TestGooglePost):
     def test_multiple_videos(self):
         from plus import GalleryPost as Post
 
-        self.mock_embedly(self.load_data('oembed_multiple_videos_content.json'))
+        self.mock_embedly(self.load_data('embedly_multiple_videos_content.json'))
         result = self.load_data('result_multiple_videos_content.html', type='html')
         self.do_test_equal(Post, 'sample_multi_vid.json', result, equal_function='assertMultiLineEqual')
 
@@ -225,7 +225,7 @@ class TestMultipleContent(TestGooglePost):
 
         result = self.load_data('result_single_linked_content.html', type="html")
 
-        self.mock_embedly(self.load_data('oembed_linked_content.json'))
+        self.mock_embedly(self.load_data('embedly_linked_content.json'))
         self.do_test_equal(WebPagePost, 'sample_webpage_with_content.json', result, equal_function='assertMultiLineEqual')
 
 
