@@ -399,32 +399,6 @@ GooglePlusPost.TYPE2CLASS['text'] = TextPost
 class GooglePlusComment(object):
 
     def __init__(self, gdata):
-        #{u'kind': u'plus#commentFeed', u'title': u'Plus Comments Feed for I also wish blogger...', u'items': [{
-        #    u'inReplyTo': [{u'url': u'https://plus.google.com/114910530124691879879/posts/LcjMiCqUuTC', u'id': u'z12ftf4qivyvvdcvp23yw3wwioqny3vxq04'}],
-        #    u'kind': u'plus#comment', 
-        #    u'object': {
-        #      u'content': u'definitely there should be a stream feature between google+ and blogger... I have to share posts from my buzz stream to get them here.',
-        #      u'objectType': u'comment'
-        #    },
-        #    u'updated': u'2011-09-08T08:13:21.347Z',
-        #    u'actor': {
-        #      u'url': u'https://plus.google.com/105284822239271942810',
-        #      u'image': {
-        #        u'url': u'https://lh5.googleusercontent.com/-VdCRq1F7oCY/AAAAAAAAAAI/AAAAAAAAAAA/v-rf9JAjwJU/photo.jpg?sz=50'
-        #      },
-        #      u'displayName': u'Niall Campbell',
-        #      u'id': u'105284822239271942810'
-        #    }, 
-        #    u'verb': u'post',
-        #    u'etag': u'"nmfNiti6wB5DqCmkKSnle50Q36k/q56lgFRr5InC_TyvaJGjZtMqYkc"',
-        #    u'published': u'2011-09-08T08:13:21.347Z',
-        #    u'id': u'riUbYPyAG7B8Q47ckxdSFxHXsfcLN7dtPqWn7iij45N_DOXGJKSsKjPtxmduM3eBMdOajasQKRk',
-        #    u'selfLink': u'https://www.googleapis.com/plus/v1/comments/riUbYPyAG7B8Q47ckxdSFxHXsfcLN7dtPqWn7iij45N_DOXGJKSsKjPtxmduM3eBMdOajasQKRk'
-        #  }],
-        #  u'updated': u'2011-09-08T08:13:21.347Z',
-        #  u'etag': u'"nmfNiti6wB5DqCmkKSnle50Q36k/6EfWXl5iDdCNZS20jyCEwyAVVIk"',
-        #  u'id': u'tag:google.com,2010:/plus/activities/z12ftf4qivyvvdcvp23yw3wwioqny3vxq04/comments'
-        # }
         self.id = gdata['id']
         self.content = gdata['object']['content']
         self.author_name = gdata['actor']['displayName']
@@ -432,7 +406,8 @@ class GooglePlusComment(object):
         self.author_url = gdata['actor']['url']
         self.author_image = gdata['actor']['image']['url']
 
-    # TODO Comment author must fill out name and e-mail setting is currently unchecked
+    # TODO Comment author must fill out name and
+    #      e-mail setting is currently unchecked
     # TODO Author details are ignored!
     def toWordPressComment(self):
         comment = WordPressComment()
@@ -440,33 +415,6 @@ class GooglePlusComment(object):
         comment.content = self.content
         comment.author = self.author_name
         comment.author_url = self.author_url
-
-        # http://codex.wordpress.org/XML-RPC_WordPress_API/Comments#wp.newComment
-        # int blog_id
-        # string username
-        # string password</tt.
-        # int <tt>post_id
-        # struct comment
-        # int comment_parent
-        # string content
-        # string author
-        # string author_url
-        # string author_email
-
-        # http://python-wordpress-xmlrpc.readthedocs.org/en/latest/ref/wordpress.html#wordpresscomment
-        # id
-        # user
-        # post
-        # post_title
-        # parent
-        # date_created (datetime)
-        # status
-        # content
-        # link
-        # author
-        # author_url
-        # author_email
-        # author_ip
 
         return comment
 
@@ -499,9 +447,9 @@ def main(argv):
 
     if not FLAGS.dryrun:
         wp = Client(
-             config.WORDPRESS_XMLRPC_URI,
-             config.WORDPRESS_USERNAME,
-             config.WORDPRESS_PASSWORD
+            config.WORDPRESS_XMLRPC_URI,
+            config.WORDPRESS_USERNAME,
+            config.WORDPRESS_PASSWORD
         )
 
     try:
@@ -530,7 +478,6 @@ def main(argv):
                 activities_doc.get('items', []),
                 key=lambda x: x["id"]
             )
-
 
             for item in items:
                 if FLAGS.post_id and FLAGS.post_id != item['id']:
@@ -566,8 +513,10 @@ def main(argv):
                 found = False
                 for existing_post in existing_posts:
                     for field in existing_post.custom_fields:
-                        if field['key'] == 'google_plus_activity_id' \
-                            and field['value'] == item['id']:
+                        field_key = field['key'] == 'google_plus_activity_id'
+                        field_value = field['value'] == item['id']
+
+                        if field_key and field_value:
                             found = existing_post
 
                 publishable_post = post.toWordPressPost()
@@ -596,15 +545,19 @@ def main(argv):
 
                 # Todo check equality, no point editing if nothing changes
                 if post.title and post.content and found:
-                    if found.content != post.content \
-                        or found.title != post.title:
+                    content_match = found.content == post.content
+                    title_match = found.title == post.title
+                    if not (content_match and title_match):
                         if FLAGS.verbose:
                             print "Updating existing post"
                         wp.call(posts.EditPost(found.id, publishable_post))
 
                 # Comments
                 if item['object']['replies']['totalItems'] > 0:
-                    comments_request = service.comments().list(maxResults=100, activityId=item['id'])
+                    comments_request = service.comments().list(
+                        maxResults=100,
+                        activityId=item['id']
+                    )
                     comments_document = comments_request.execute()
 
                     for comment in comments_document['items']:
@@ -615,25 +568,21 @@ def main(argv):
                             print "Publishing new comment to " + found.id
                             wp.call(NewAnonymousComment(found.id, publishable_comment))
 
-                        # See https://github.com/maxcutler/python-wordpress-xmlrpc/pull/35                            
+                        # See https://github.com/maxcutler/python-wordpress-xmlrpc/pull/35
                         # http://en.forums.wordpress.com/topic/xml-rpc-anonymous-comments-wordpresscom?replies=18
                         if config.WORDPRESS_COMMENT_STYLE == 'anonymous':
                             wp.call(NewAnonymousComment(found.id, publishable_comment))
                         else:
                             wp.call(comments.NewComment(found.id, publishable_comment))
-                       
-
-
-
 
                 post_request = service.activities().list_next(
-                              post_request, activities_doc
-                          )
+                    post_request, activities_doc
+                )
             break
 
     except AccessTokenRefreshError:
         print ("The credentials have been revoked or expired, please re-run"
-                 "the application to re-authorize")
+               "the application to re-authorize")
 
 if __name__ == '__main__':
     main(sys.argv)
