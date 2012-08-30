@@ -51,7 +51,7 @@ from oauth2client.tools import run
 
 import html2text
 import nltk
-from wordpress_xmlrpc import Client, WordPressPost, WordPressComment
+from wordpress_xmlrpc import Client, WordPressPost, WordPressComment, AnonymousMethod
 from wordpress_xmlrpc.methods import posts, comments
 
 FLAGS = gflags.FLAGS
@@ -146,6 +146,19 @@ def render_tmpl(filename, content):
     template = env.get_template(filename)
     return template.render(**content)
 
+# See https://github.com/maxcutler/python-wordpress-xmlrpc/pull/35
+class NewAnonymousComment(AnonymousMethod):
+    """
+    Create a new comment on a post without authenticating.
+
+    Parameters:
+        `post_id`: The id of the post to add a comment to.
+        `comment`: A :class:`WordPressComment` instance with at least the `content` value set.
+
+    Returns: ID of the newly-created comment (an integer).
+    """
+    method_name = 'wp.newComment'
+    method_args = ('post_id', 'comment')   
 
 # Google Plus post types
 ###############################################################################
@@ -592,11 +605,16 @@ def main(argv):
                         # TODO Check post for existing comments nad avoid duplication
                         if FLAGS.verbose:
                             print "Publishing new comment to " + found.id
-                        wp.call(comments.NewComment(found.id, publishable_comment))
-                        
-                        # {u'kind': u'plus#commentFeed', u'title': u'Plus Comments Feed for I also wish blogger...', u'items': [{u'inReplyTo': [{u'url': u'https://plus.google.com/114910530124691879879/posts/LcjMiCqUuTC', u'id': u'z12ftf4qivyvvdcvp23yw3wwioqny3vxq04'}], u'kind': u'plus#comment', u'object': {u'content': u'definitely there should be a stream feature between google+ and blogger...I have to share posts from my buzz stream to get them here.', u'objectType': u'comment'}, u'updated': u'2011-09-08T08:13:21.347Z', u'actor': {u'url': u'https://plus.google.com/105284822239271942810', u'image': {u'url': u'https://lh5.googleusercontent.com/-VdCRq1F7oCY/AAAAAAAAAAI/AAAAAAAAAAA/v-rf9JAjwJU/photo.jpg?sz=50'}, u'displayName': u'Niall Campbell', u'id': u'105284822239271942810'}, u'verb': u'post', u'etag': u'"nmfNiti6wB5DqCmkKSnle50Q36k/q56lgFRr5InC_TyvaJGjZtMqYkc"', u'published': u'2011-09-08T08:13:21.347Z', u'id': u'riUbYPyAG7B8Q47ckxdSFxHXsfcLN7dtPqWn7iij45N_DOXGJKSsKjPtxmduM3eBMdOajasQKRk', u'selfLink': u'https://www.googleapis.com/plus/v1/comments/riUbYPyAG7B8Q47ckxdSFxHXsfcLN7dtPqWn7iij45N_DOXGJKSsKjPtxmduM3eBMdOajasQKRk'}], u'updated': u'2011-09-08T08:13:21.347Z', u'etag': u'"nmfNiti6wB5DqCmkKSnle50Q36k/6EfWXl5iDdCNZS20jyCEwyAVVIk"', u'id': u'tag:google.com,2010:/plus/activities/z12ftf4qivyvvdcvp23yw3wwioqny3vxq04/comments'}
+                            wp.call(NewAnonymousComment(found.id, publishable_comment))
 
-                        #raise "HI"
+                        # See https://github.com/maxcutler/python-wordpress-xmlrpc/pull/35                            
+                        # http://en.forums.wordpress.com/topic/xml-rpc-anonymous-comments-wordpresscom?replies=18
+                        if config.WORDPRESS_COMMENT_STYLE == 'anonymous':
+                            wp.call(NewAnonymousComment(found.id, publishable_comment))
+                        else:
+                            wp.call(comments.NewComment(found.id, publishable_comment))
+                       
+
 
 
 
