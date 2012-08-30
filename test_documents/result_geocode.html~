@@ -1,7 +1,0 @@
-<div class="geocode">
-    <a href="http://maps.google.com/?ll=-7.3588039,106.4051172&q=-7.3588039,106.4051172">
-        <img src="http://maps.googleapis.com/maps/api/staticmap?center=-7.3588039,106.4051172&zoom=12&size=75x75&maptype=roadmap&markers=size:small|color:red|-7.3588039,106.4051172&sensor=false" class="alignleft">
-        
-        
-    </a>
-</div>
