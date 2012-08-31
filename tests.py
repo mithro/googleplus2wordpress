@@ -25,17 +25,20 @@ import json
 import os
 try:
     import unittest2 as unittest
-except Exception:
+except ImportError:
     import unittest
 
 from mock import patch, MagicMock, Mock
 
 
 class TestGooglePost(unittest.TestCase):
+    maxDiff = None
+
     def setUp(self):
         self.oauth2client_mock = MagicMock()
         self.oauth2client_mock.flow_from_clientsecrets = Mock()
         self.config = MagicMock()
+	self.config.EMBEDLY_KEY = ''
         modules = {
             'oauth2client.client': self.oauth2client_mock,
             'oauth2client.flow_from_clientsecrets':
@@ -110,7 +113,7 @@ class TestPhoto(TestGooglePost):
 
     def test_photo_from_smugmug(self):
         from plus import PhotoPost
-        result = ''
+        result = """<img class="alignnone" src="http://fotoeffects.smugmug.com/Daily-shots-for-the-dailies/Dailies/i-VNkmwF6/0/M/DSC6450-M.jpg" alt="">"""
         self.do_test_equal(PhotoPost, 'sample_smugmug.json', result)
 
 
@@ -180,7 +183,7 @@ class TestPhotoContent(TestGooglePost):
 
     def test_photo_from_smugmug(self):
         from plus import PhotoPost
-        result = ''
+        result = """<img class="alignnone" src="http://fotoeffects.smugmug.com/Daily-shots-for-the-dailies/Dailies/i-VNkmwF6/0/M/DSC6450-M.jpg" alt="">"""
         self.do_test_equal(PhotoPost, 'sample_smugmug_with_content.json', result)
 
 
@@ -248,7 +251,7 @@ class TestUtils(TestGooglePost):
 
         post = WebPagePost('', gdata, {})
         post.render()
-        self.assertEqual("""From mock""", post.title)
+        self.assertMultiLineEqual("""From mock""", post.title)
 
 
 class TestGeocode(TestGooglePost):
