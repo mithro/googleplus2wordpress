@@ -38,7 +38,7 @@ class TestGooglePost(unittest.TestCase):
         self.oauth2client_mock = MagicMock()
         self.oauth2client_mock.flow_from_clientsecrets = Mock()
         self.config = MagicMock()
-	self.config.EMBEDLY_KEY = ''
+        self.config.EMBEDLY_KEY = ''
         modules = {
             'oauth2client.client': self.oauth2client_mock,
             'oauth2client.flow_from_clientsecrets':
@@ -98,8 +98,9 @@ class TestPhoto(TestGooglePost):
         from plus import PhotoPost
 
         #we need to strip, since the render add
-        result = """<img class="alignnone" src="https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=https%3A%2F%2Flh3.googleusercontent.com%2F-pO-hpo7EM7E%2FTv55RUxDaUI%2FAAAAAAAAAMk%2FW3HP0NZUdjg%2Fw288-h288%2Fcrop.png" alt="">"""
-        self.do_test_equal(PhotoPost, 'sample_pic_with_content.json', result)
+        result = """<img class="alignnone" src="https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=https%3A%2F%2Flh5.googleusercontent.com%2F-YhGQ2IKWJok%2FUDR4WL8APXI%2FAAAAAAAAAOI%2FdjbWuClePMk%2Fs0-d%2F14-05-07_1132.jpg" alt="">"""
+
+        self.do_test_equal(PhotoPost, 'sample_pic_without_content.json', result)
 
     def test_photo_from_picasa_web(self):
         from plus import PhotoPost
@@ -108,7 +109,7 @@ class TestPhoto(TestGooglePost):
 
     def test_photo_from_flickr(self):
         from plus import PhotoPost
-        result = ''
+        result = """<img class="alignnone" src="http://farm8.staticflickr.com/7061/6987228783_2b951598c9_s.jpg" alt="Infinity London Underground EXPLORED #1 My Top 40 Click Best viewed hereClick Please check out my new group City and Architecture No images or links in comments, many thanks!!!">"""
         self.do_test_equal(PhotoPost, 'sample_pic_flickr_without_content.json', result)
 
     def test_photo_from_smugmug(self):
@@ -178,7 +179,7 @@ class TestPhotoContent(TestGooglePost):
 
     def test_photo_from_flickr(self):
         from plus import PhotoPost
-        result = ''
+        result = """<img class="alignnone" src="http://farm8.staticflickr.com/7061/6987228783_2b951598c9_s.jpg" alt="Infinity London Underground EXPLORED #1 My Top 40 Click Best viewed hereClick Please check out my new group City and Architecture No images or links in comments, many thanks!!!">"""
         self.do_test_equal(PhotoPost, 'sample_pic_flickr_with_content.json', result)
 
     def test_photo_from_smugmug(self):
