@@ -99,22 +99,26 @@ class TestPhoto(TestGooglePost):
 
         #we need to strip, since the render add
         result = """<img class="alignnone" src="https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=https%3A%2F%2Flh5.googleusercontent.com%2F-YhGQ2IKWJok%2FUDR4WL8APXI%2FAAAAAAAAAOI%2FdjbWuClePMk%2Fs0-d%2F14-05-07_1132.jpg" alt="">"""
-
+        self.mock_embedly({})
         self.do_test_equal(PhotoPost, 'sample_pic_without_content.json', result)
 
     def test_photo_from_picasa_web(self):
         from plus import PhotoPost
         result = """<img class="alignnone" src="https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=https%3A%2F%2Flh6.googleusercontent.com%2F-D0vjgEuIKFM%2FT-rhhY-iBbI%2FAAAAAAAAIJw%2FSUL6I7p1Sh4%2Fw288-h288%2FSkyline%252BWinterfest.jpg" alt="">"""
+        self.mock_embedly({})
         self.do_test_equal(PhotoPost, 'sample_picasa.json', result)
 
     def test_photo_from_flickr(self):
         from plus import PhotoPost
         result = """<img class="alignnone" src="http://farm8.staticflickr.com/7061/6987228783_2b951598c9_s.jpg" alt="Infinity London Underground EXPLORED #1 My Top 40 Click Best viewed hereClick Please check out my new group City and Architecture No images or links in comments, many thanks!!!">"""
+
+        self.mock_embedly(self.load_data('embedly_flickr.json'))
         self.do_test_equal(PhotoPost, 'sample_pic_flickr_without_content.json', result)
 
     def test_photo_from_smugmug(self):
         from plus import PhotoPost
         result = """<img class="alignnone" src="http://fotoeffects.smugmug.com/Daily-shots-for-the-dailies/Dailies/i-VNkmwF6/0/M/DSC6450-M.jpg" alt="">"""
+        self.mock_embedly(self.load_data('embedly_smugmug.json'))
         self.do_test_equal(PhotoPost, 'sample_smugmug.json', result)
 
 
@@ -175,21 +179,28 @@ class TestPhotoContent(TestGooglePost):
     def test_photo_from_google_plus(self):
         from plus import PhotoPost
         result = """<img class="alignnone" src="https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=https%3A%2F%2Flh3.googleusercontent.com%2F-pO-hpo7EM7E%2FTv55RUxDaUI%2FAAAAAAAAAMk%2FW3HP0NZUdjg%2Fw288-h288%2Fcrop.png" alt="">"""
+
+        self.mock_embedly({})
         self.do_test_equal(PhotoPost, 'sample_pic_with_content.json', result)
 
     def test_photo_from_picasa_web(self):
         from plus import PhotoPost
         result = """<img class="alignnone" src="https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=https%3A%2F%2Flh5.googleusercontent.com%2F-B-U72k6hExM%2FUAHNU_bEb4I%2FAAAAAAAAHDg%2FhxWdDTvWnNY%2Fw288-h288%2F11-C-611%252B%2525281%252529.jpg" alt="">"""
+        self.mock_embedly({})
         self.do_test_equal(PhotoPost, 'sample_picasa_with_content.json', result)
 
     def test_photo_from_flickr(self):
         from plus import PhotoPost
         result = """<img class="alignnone" src="http://farm8.staticflickr.com/7061/6987228783_2b951598c9_s.jpg" alt="Infinity London Underground EXPLORED #1 My Top 40 Click Best viewed hereClick Please check out my new group City and Architecture No images or links in comments, many thanks!!!">"""
+        #self.mock_embedly({})
+
+        self.mock_embedly(self.load_data('embedly_flickr_with_content.json'))
         self.do_test_equal(PhotoPost, 'sample_pic_flickr_with_content.json', result)
 
     def test_photo_from_smugmug(self):
         from plus import PhotoPost
         result = """<img class="alignnone" src="http://fotoeffects.smugmug.com/Daily-shots-for-the-dailies/Dailies/i-VNkmwF6/0/M/DSC6450-M.jpg" alt="">"""
+        self.mock_embedly(self.load_data('embedly_smug_mug_with_content.json'))
         self.do_test_equal(PhotoPost, 'sample_smugmug_with_content.json', result)
 
 
@@ -264,6 +275,7 @@ class TestGeocode(TestGooglePost):
     def test_post(self):
         from plus import PhotoPost
         result = self.load_data('result_geocode.html', type='html')
+        self.mock_embedly({})
         self.do_test_equal(PhotoPost, 'sample_pic_with_geocode.json', result, 'render_geocode')
 
 
