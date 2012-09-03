@@ -258,6 +258,33 @@ class TestShare(TestGooglePost):
         self.assertTrue(gdata['object'].get('id', '') != '')
         self.assertTrue(gdata['annotation'] != None)
 
+    def test_linked_share(self):
+        from plus import TextPost
+        gdata = self.load_data('sample_link_share.json')
+        post = TextPost('', gdata, {})
+        post.render()
+
+        self.assertIsNotNone(gdata['object']['id'])
+        self.assertEqual('', gdata['annotation'])
+
+    def test_pic_share(self):
+        from plus import TextPost
+        gdata = self.load_data('sample_pic_share.json')
+        post = TextPost('', gdata, {})
+        post.render()
+
+        self.assertIsNotNone(gdata['object']['id'])
+        self.assertEqual('', gdata['annotation'])
+
+    def test_video_share(self):
+        from plus import TextPost
+        gdata = self.load_data('sample_video_share.json')
+        post = TextPost('', gdata, {})
+        post.render()
+
+        self.assertIsNotNone(gdata['object']['id'])
+        self.assertEqual('', gdata['annotation'])
+
 
 class TestUtils(TestGooglePost):
     def test_title_generation(self):
