@@ -336,6 +336,9 @@ class PhotoPost(GooglePlusPost):
             full_url = obj['fullImage']['url']
             content = obj['fullImage'].get('content', '')
         except KeyError:
+            import ipdb
+            ipdb.set_trace()
+   
             edata = embed_content(obj['url'])
             if FLAGS.verbose:
                 print "Embedly data for '%s'" % obj['url']
@@ -444,7 +447,7 @@ def main(argv):
 
                 if FLAGS.verbose:
                     print 'Assessing / Publishing ID: %-040s' % item['id']
-
+                    
                 otype = GooglePlusPost.type(item['object'])
 
                 # If item['object'] has an id then it's a reshare,
