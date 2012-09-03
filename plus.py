@@ -336,9 +336,6 @@ class PhotoPost(GooglePlusPost):
             full_url = obj['fullImage']['url']
             content = obj['fullImage'].get('content', '')
         except KeyError:
-            import ipdb
-            ipdb.set_trace()
-   
             edata = embed_content(obj['url'])
             if FLAGS.verbose:
                 print "Embedly data for '%s'" % obj['url']
