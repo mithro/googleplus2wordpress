@@ -86,7 +86,9 @@ class TestGooglePost(unittest.TestCase):
     def mock_embedly(self, expected_return_value):
         """Mock embedly object"""
         import plus
-
+        if not isinstance(expected_return_value, (list, tuple)):
+            expected_return_value = [expected_return_value,]
+            
         plus.OEMBED_CONSUMER = MagicMock()
         embed = MagicMock()
         embed.getData = MagicMock(side_effect=expected_return_value)
@@ -111,7 +113,7 @@ class TestPhoto(TestGooglePost):
     def test_photo_from_flickr(self):
         from plus import PhotoPost
         result = """<img class="alignnone" src="http://farm8.staticflickr.com/7061/6987228783_2b951598c9_s.jpg" alt="Infinity London Underground EXPLORED #1 My Top 40 Click Best viewed hereClick Please check out my new group City and Architecture No images or links in comments, many thanks!!!">"""
-
+        
         self.mock_embedly(self.load_data('embedly_flickr.json'))
         self.do_test_equal(PhotoPost, 'sample_pic_flickr_without_content.json', result)
 
