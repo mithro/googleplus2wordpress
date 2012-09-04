@@ -173,7 +173,9 @@ class TestMultiple(TestGooglePost):
 
     def test_multiple_photo_video(self):
         from plus import GalleryPost as Post
-        self.do_test_equal(Post, 'sample_photo_video_content.json', '', equal_function='assertMultiLineEqual')
+        self.mock_embedly(self.load_data('embedly_multi_photo_video.json', type='json'))
+        result = self.load_data('result_multi_photo_video.html', type="html")
+        self.do_test_equal(Post, 'sample_photo_video_content.json', result, equal_function='assertMultiLineEqual')
 
 
 class TestPhotoContent(TestGooglePost):
