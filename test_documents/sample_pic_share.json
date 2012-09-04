@@ -1,1 +1,61 @@
-{"placeName": "", "kind": "plus#activity", "provider": {"title": "Google+"}, "title": "Reshared post from Prihtiono Sejati\n \n\nCost Guard Port @Tanjung Uban", "url": "https://plus.google.com/111415681122206252267/posts/WygibVd3cbG", "geocode": "1.046256 104.2413372", "object": {"resharers": {"totalItems": 0, "selfLink": "https://www.googleapis.com/plus/v1/activities/z12zxb15llzrg1b5n04cghrx2lvsdbgaeys0k/people/resharers"}, "attachments": [{"content": "02/09/2012 - 1", "url": "https://plus.google.com/photos/103911730977405829770/albums/5783614898536671473/5783614898823204082", "image": {"url": "https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=https%3A%2F%2Flh6.googleusercontent.com%2F-J9Sybz-5ODk%2FUEOHG4oDjPI%2FAAAAAAAAAgM%2FdSEam2aiDOk%2Fs0-d%2F2012%252B-%252B1", "type": "image/jpeg"}, "fullImage": {"url": "https://lh6.googleusercontent.com/-J9Sybz-5ODk/UEOHG4oDjPI/AAAAAAAAAgM/dSEam2aiDOk/s0-d/2012%2B-%2B1", "width": 857, "type": "image/jpeg", "height": 594}, "objectType": "photo"}], "url": "https://plus.google.com/103911730977405829770/posts/D6Rk7v51CZR", "actor": {"url": "https://plus.google.com/103911730977405829770", "image": {"url": "https://lh6.googleusercontent.com/-7Ex_MtCHC2A/AAAAAAAAAAI/AAAAAAAAAAA/2o8KUSuJ2hA/photo.jpg?sz=50"}, "displayName": "Prihtiono Sejati", "id": "103911730977405829770"}, "content": "Cost Guard Port @Tanjung Uban", "plusoners": {"totalItems": 0, "selfLink": "https://www.googleapis.com/plus/v1/activities/z12zxb15llzrg1b5n04cghrx2lvsdbgaeys0k/people/plusoners"}, "replies": {"totalItems": 0, "selfLink": "https://www.googleapis.com/plus/v1/activities/z12zxb15llzrg1b5n04cghrx2lvsdbgaeys0k/comments"}, "id": "z132f5444uyfxzdmc224z3dwpuupyrvmu", "objectType": "activity"}, "updated": "2012-09-03T06:04:44.918Z", "actor": {"url": "https://plus.google.com/111415681122206252267", "image": {"url": "https://lh3.googleusercontent.com/-PlbEGa3K3j4/AAAAAAAAAAI/AAAAAAAAAAA/m6K0pSyg7CM/photo.jpg?sz=50"}, "displayName": "Bayu Adji", "id": "111415681122206252267", "name": {"givenName": "Bayu", "familyName": "Adji"}}, "annotation": "", "access": {"items": [{"type": "public"}, {"type": "person", "id": "111415681122206252267"}], "kind": "plus#acl"}, "verb": "share", "etag": "\"nmfNiti6wB5DqCmkKSnle50Q36k/4mUGWfBJfSsbgP2zZAOFz5RKfXI\"", "published": "2012-09-03T06:04:44.918Z", "crosspostSource": "11289844709883368868", "id": "z12zxb15llzrg1b5n04cghrx2lvsdbgaeys0k", "address": "Jalan Labuan Gorap, Batam, Riau"}
+{ "access" : { "items" : [ { "type" : "public" },
+          { "id" : "111415681122206252267",
+            "type" : "person"
+          }
+        ],
+      "kind" : "plus#acl"
+    },
+  "actor" : { "displayName" : "Bayu Adji",
+      "id" : "111415681122206252267",
+      "image" : { "url" : "https://lh3.googleusercontent.com/-PlbEGa3K3j4/AAAAAAAAAAI/AAAAAAAAAAA/m6K0pSyg7CM/photo.jpg?sz=50" },
+      "name" : { "familyName" : "Adji",
+          "givenName" : "Bayu"
+        },
+      "url" : "https://plus.google.com/111415681122206252267"
+    },
+  "address" : "Jalan Labuan Gorap, Batam, Riau",
+  "annotation" : "",
+  "crosspostSource" : "11289844709883368868",
+  "etag" : "\"nmfNiti6wB5DqCmkKSnle50Q36k/4mUGWfBJfSsbgP2zZAOFz5RKfXI\"",
+  "geocode" : "1.046256 104.2413372",
+  "id" : "z12zxb15llzrg1b5n04cghrx2lvsdbgaeys0k",
+  "kind" : "plus#activity",
+  "object" : { "actor" : { "displayName" : "Prihtiono Sejati",
+          "id" : "103911730977405829770",
+          "image" : { "url" : "https://lh6.googleusercontent.com/-7Ex_MtCHC2A/AAAAAAAAAAI/AAAAAAAAAAA/2o8KUSuJ2hA/photo.jpg?sz=50" },
+          "url" : "https://plus.google.com/103911730977405829770"
+        },
+      "attachments" : [ { "content" : "02/09/2012 - 1",
+            "fullImage" : { "height" : 594,
+                "type" : "image/jpeg",
+                "url" : "https://lh6.googleusercontent.com/-J9Sybz-5ODk/UEOHG4oDjPI/AAAAAAAAAgM/dSEam2aiDOk/s0-d/2012%2B-%2B1",
+                "width" : 857
+              },
+            "image" : { "type" : "image/jpeg",
+                "url" : "https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=https%3A%2F%2Flh6.googleusercontent.com%2F-J9Sybz-5ODk%2FUEOHG4oDjPI%2FAAAAAAAAAgM%2FdSEam2aiDOk%2Fs0-d%2F2012%252B-%252B1"
+              },
+            "objectType" : "photo",
+            "url" : "https://plus.google.com/photos/103911730977405829770/albums/5783614898536671473/5783614898823204082"
+          } ],
+      "content" : "Cost Guard Port @Tanjung Uban",
+      "id" : "z132f5444uyfxzdmc224z3dwpuupyrvmu",
+      "objectType" : "activity",
+      "plusoners" : { "selfLink" : "https://www.googleapis.com/plus/v1/activities/z12zxb15llzrg1b5n04cghrx2lvsdbgaeys0k/people/plusoners",
+          "totalItems" : 0
+        },
+      "replies" : { "selfLink" : "https://www.googleapis.com/plus/v1/activities/z12zxb15llzrg1b5n04cghrx2lvsdbgaeys0k/comments",
+          "totalItems" : 0
+        },
+      "resharers" : { "selfLink" : "https://www.googleapis.com/plus/v1/activities/z12zxb15llzrg1b5n04cghrx2lvsdbgaeys0k/people/resharers",
+          "totalItems" : 0
+        },
+      "url" : "https://plus.google.com/103911730977405829770/posts/D6Rk7v51CZR"
+    },
+  "placeName" : "",
+  "provider" : { "title" : "Google+" },
+  "published" : "2012-09-03T06:04:44.918Z",
+  "title" : "Reshared post from Prihtiono Sejati\n \n\nCost Guard Port @Tanjung Uban",
+  "updated" : "2012-09-03T06:04:44.918Z",
+  "url" : "https://plus.google.com/111415681122206252267/posts/WygibVd3cbG",
+  "verb" : "share"
+}

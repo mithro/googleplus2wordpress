@@ -173,7 +173,6 @@ class TestMultiple(TestGooglePost):
 
     def test_multiple_photo_video(self):
         from plus import GalleryPost as Post
-
         self.do_test_equal(Post, 'sample_photo_video_content.json', '', equal_function='assertMultiLineEqual')
 
 

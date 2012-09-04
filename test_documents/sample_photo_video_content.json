@@ -1,1 +1,69 @@
-{"kind": "plus#activity", "provider": {"title": "Google+"}, "title": "test", "url": "https://plus.google.com/111415681122206252267/posts/BNJSnVSqZao", "object": {"resharers": {"totalItems": 0, "selfLink": "https://www.googleapis.com/plus/v1/activities/z13wedfxowijxfzdx233hzcoiy2dv1mrq04/people/resharers"}, "attachments": [{"url": "https://plus.google.com/photos/111415681122206252267/albums/5782876990269415361", "displayName": "August 31, 2012 (2 photos)", "objectType": "photo-album"}, {"content": "sample_sorenson.mov", "url": "https://plus.google.com/photos/111415681122206252267/albums/5782876990269415361/5782876989650158754", "image": {"url": "https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=https%3A%2F%2Flh4.googleusercontent.com%2F-bi-gy0Rvoe0%2FUEDn-6vgxKI%2FAAAAAAAAAUo%2F6TdoCeKlFFQ%2Fw128-h96%2Fsample_sorenson.mov", "type": "image/jpeg"}, "embed": {"url": "https://lh4.googleusercontent.com/-bi-gy0Rvoe0/UEDn-6vgxKI/AAAAAAAAAUo/6TdoCeKlFFQ/s0-d/sample_sorenson.mov", "type": "image/jpeg"}, "objectType": "video"}, {"content": "klingon.jpg", "url": "https://plus.google.com/photos/111415681122206252267/albums/5782876990269415361/5782877168984614226", "image": {"url": "https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=https%3A%2F%2Flh5.googleusercontent.com%2F-uPjuIrhZaRk%2FUEDoJW0LZVI%2FAAAAAAAAAUs%2F8clFBI6kQTs%2Fw90-h96%2Fklingon.jpg", "width": 90, "type": "image/jpeg", "height": 96}, "fullImage": {"url": "https://lh5.googleusercontent.com/-uPjuIrhZaRk/UEDoJW0LZVI/AAAAAAAAAUs/8clFBI6kQTs/s0-d/klingon.jpg", "width": 135, "type": "image/jpeg", "height": 144}, "objectType": "photo"}], "originalContent": "", "url": "https://plus.google.com/111415681122206252267/posts/BNJSnVSqZao", "content": "test", "plusoners": {"totalItems": 0, "selfLink": "https://www.googleapis.com/plus/v1/activities/z13wedfxowijxfzdx233hzcoiy2dv1mrq04/people/plusoners"}, "replies": {"totalItems": 0, "selfLink": "https://www.googleapis.com/plus/v1/activities/z13wedfxowijxfzdx233hzcoiy2dv1mrq04/comments"}, "objectType": "note"}, "updated": "2012-08-31T16:37:11.802Z", "actor": {"url": "https://plus.google.com/111415681122206252267", "image": {"url": "https://lh3.googleusercontent.com/-PlbEGa3K3j4/AAAAAAAAAAI/AAAAAAAAAAA/m6K0pSyg7CM/photo.jpg?sz=50"}, "displayName": "Bayu Adji", "id": "111415681122206252267", "name": {"givenName": "Bayu", "familyName": "Adji"}}, "access": {"items": [{"type": "public"}, {"type": "person", "id": "111415681122206252267"}], "kind": "plus#acl"}, "verb": "post", "etag": "\"nmfNiti6wB5DqCmkKSnle50Q36k/ssdWYxanuYvd31wVGHesbh6-Q00\"", "published": "2012-08-31T16:37:11.000Z", "crosspostSource": "oz:111415681122206252267.1397d8aff6d.0", "id": "z13wedfxowijxfzdx233hzcoiy2dv1mrq04"}
+{ "access" : { "items" : [ { "type" : "public" },
+          { "id" : "111415681122206252267",
+            "type" : "person"
+          }
+        ],
+      "kind" : "plus#acl"
+    },
+  "actor" : { "displayName" : "Bayu Adji",
+      "id" : "111415681122206252267",
+      "image" : { "url" : "https://lh3.googleusercontent.com/-PlbEGa3K3j4/AAAAAAAAAAI/AAAAAAAAAAA/m6K0pSyg7CM/photo.jpg?sz=50" },
+      "name" : { "familyName" : "Adji",
+          "givenName" : "Bayu"
+        },
+      "url" : "https://plus.google.com/111415681122206252267"
+    },
+  "crosspostSource" : "oz:111415681122206252267.1397d8aff6d.0",
+  "etag" : "\"nmfNiti6wB5DqCmkKSnle50Q36k/ssdWYxanuYvd31wVGHesbh6-Q00\"",
+  "id" : "z13wedfxowijxfzdx233hzcoiy2dv1mrq04",
+  "kind" : "plus#activity",
+  "object" : { "attachments" : [ { "displayName" : "August 31, 2012 (2 photos)",
+            "objectType" : "photo-album",
+            "url" : "https://plus.google.com/photos/111415681122206252267/albums/5782876990269415361"
+          },
+          { "content" : "sample_sorenson.mov",
+            "embed" : { "type" : "image/jpeg",
+                "url" : "https://lh4.googleusercontent.com/-bi-gy0Rvoe0/UEDn-6vgxKI/AAAAAAAAAUo/6TdoCeKlFFQ/s0-d/sample_sorenson.mov"
+              },
+            "image" : { "type" : "image/jpeg",
+                "url" : "https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=https%3A%2F%2Flh4.googleusercontent.com%2F-bi-gy0Rvoe0%2FUEDn-6vgxKI%2FAAAAAAAAAUo%2F6TdoCeKlFFQ%2Fw128-h96%2Fsample_sorenson.mov"
+              },
+            "objectType" : "video",
+            "url" : "https://plus.google.com/photos/111415681122206252267/albums/5782876990269415361/5782876989650158754"
+          },
+          { "content" : "klingon.jpg",
+            "fullImage" : { "height" : 144,
+                "type" : "image/jpeg",
+                "url" : "https://lh5.googleusercontent.com/-uPjuIrhZaRk/UEDoJW0LZVI/AAAAAAAAAUs/8clFBI6kQTs/s0-d/klingon.jpg",
+                "width" : 135
+              },
+            "image" : { "height" : 96,
+                "type" : "image/jpeg",
+                "url" : "https://images0-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&resize_h=100&url=https%3A%2F%2Flh5.googleusercontent.com%2F-uPjuIrhZaRk%2FUEDoJW0LZVI%2FAAAAAAAAAUs%2F8clFBI6kQTs%2Fw90-h96%2Fklingon.jpg",
+                "width" : 90
+              },
+            "objectType" : "photo",
+            "url" : "https://plus.google.com/photos/111415681122206252267/albums/5782876990269415361/5782877168984614226"
+          }
+        ],
+      "content" : "test",
+      "objectType" : "note",
+      "originalContent" : "",
+      "plusoners" : { "selfLink" : "https://www.googleapis.com/plus/v1/activities/z13wedfxowijxfzdx233hzcoiy2dv1mrq04/people/plusoners",
+          "totalItems" : 0
+        },
+      "replies" : { "selfLink" : "https://www.googleapis.com/plus/v1/activities/z13wedfxowijxfzdx233hzcoiy2dv1mrq04/comments",
+          "totalItems" : 0
+        },
+      "resharers" : { "selfLink" : "https://www.googleapis.com/plus/v1/activities/z13wedfxowijxfzdx233hzcoiy2dv1mrq04/people/resharers",
+          "totalItems" : 0
+        },
+      "url" : "https://plus.google.com/111415681122206252267/posts/BNJSnVSqZao"
+    },
+  "provider" : { "title" : "Google+" },
+  "published" : "2012-08-31T16:37:11.000Z",
+  "title" : "test",
+  "updated" : "2012-08-31T16:37:11.802Z",
+  "url" : "https://plus.google.com/111415681122206252267/posts/BNJSnVSqZao",
+  "verb" : "post"
+}
