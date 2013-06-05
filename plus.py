@@ -55,6 +55,8 @@ from wordpress_xmlrpc import Client, WordPressPost
 from wordpress_xmlrpc import WordPressComment, AnonymousMethod
 from wordpress_xmlrpc.methods import posts, comments
 
+from dateutil.parser import parse as date_parse
+
 FLAGS = gflags.FLAGS
 
 gflags.DEFINE_string(
@@ -229,6 +231,9 @@ class GooglePlusPost(object):
         self.content = None
         self.title = None
 
+        self.published = date_parse(self.gdata['published'])
+        self.updated = date_parse(self.gdata['updated'])
+
         # Convert content to HTML so we can:
         #  * Determine if the page has content
         #  * Create a better title
@@ -280,6 +285,9 @@ class GooglePlusPost(object):
 
         if self.content:
             post.content = self.content
+
+        post.date = self.published
+        post.date_modified = self.updated
 
         post.post_status = 'publish'
         return post
@@ -503,7 +511,7 @@ def main(argv):
                 # If item['object'] has an id then it's a reshare,
                 if item['object'].get('id', ''):
                     author = item['object']['actor']['displayName']
-                    post = TextPost(item['id'], item, [])
+                    post = TextPost(item['id'], item)
                     post.title = '%sReshared %s from %s' % (
                         ['', "%s - " % post.title][len(post.title) > 1],
                         otype, author)
@@ -567,6 +575,7 @@ def main(argv):
                         wp.call(posts.EditPost(found.id, publishable_post))
 
                 # Comments
+                """
                 if item['object']['replies']['totalItems'] > 0:
                     comments_request = service.comments().list(
                         maxResults=100,
@@ -587,6 +596,7 @@ def main(argv):
                             wp.call(NewAnonymousComment(found.id, publishable_comment))
                         else:
                             wp.call(comments.NewComment(found.id, publishable_comment))
+"""
 
                 post_request = service.activities().list_next(
                     post_request, activities_doc
