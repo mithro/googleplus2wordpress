@@ -52,7 +52,8 @@ from oauth2client.tools import run
 import html2text
 import nltk
 from wordpress_xmlrpc import Client, WordPressPost
-from wordpress_xmlrpc.methods import posts
+from wordpress_xmlrpc import WordPressComment, AnonymousMethod
+from wordpress_xmlrpc.methods import posts, comments
 
 FLAGS = gflags.FLAGS
 
@@ -88,8 +89,8 @@ with information from the APIs Console <https://code.google.com/apis/console>.
 
 """ % os.path.join(os.path.dirname(__file__), CLIENT_SECRETS)
 FLOW = flow_from_clientsecrets(CLIENT_SECRETS,
-    scope='https://www.googleapis.com/auth/plus.me',
-    message=MISSING_CLIENT_SECRETS_MESSAGE)
+                               scope='https://www.googleapis.com/auth/plus.me',
+                               message=MISSING_CLIENT_SECRETS_MESSAGE)
 
 
 # Code to get more information about posted contents using oembed protocol
@@ -102,19 +103,22 @@ OEMBED_CONSUMER.addEndpoint(
     oembed.OEmbedEndpoint(
         'http://picasaweb-oembed.appspot.com/oembed',
         ['http://picasaweb.google.com/*',
-             'https://picasaweb.google.com/*',
-             'http://plus.google.com/photos/*',
-             'https://plus.google.com/photos/*'])
-    )
+         'https://picasaweb.google.com/*',
+         'http://plus.google.com/photos/*',
+         'https://plus.google.com/photos/*'])
+)
 
 
 class Embedly(oembed.OEmbedEndpoint):
     KEY = False
 
     def __init__(self, key):
-        oembed.OEmbedEndpoint.__init__(self,
+        oembed.OEmbedEndpoint.__init__(
+            self,
             'http://api.embed.ly/1/oembed',
-            ['http://*', 'https://*'])
+            ['http://*', 'https://*']
+        )
+
         self.KEY = key
 
     def request(self, *args, **kw):
@@ -144,7 +148,7 @@ env = Environment(
     loader=FileSystemLoader('templates'),
     comment_start_string='{% comment %}',
     comment_end_string='{% endcomment %}',
-    )
+)
 
 
 def render_tmpl(filename, content):
@@ -152,6 +156,22 @@ def render_tmpl(filename, content):
         del content['self']
     template = env.get_template(filename)
     return template.render(**content)
+
+
+# See https://github.com/maxcutler/python-wordpress-xmlrpc/pull/35
+class NewAnonymousComment(AnonymousMethod):
+    """
+    Create a new comment on a post without authenticating.
+
+    Parameters:
+        `post_id`: The id of the post to add a comment to.
+        `comment`: A :class:`WordPressComment` instance with
+                   at least the `content` value set.
+
+    Returns: ID of the newly-created comment (an integer).
+    """
+    method_name = 'wp.newComment'
+    method_args = ('post_id', 'comment')
 
 
 # Google Plus post types
@@ -196,12 +216,11 @@ class GooglePlusPost(object):
         else:
             return "text"
 
-    def __init__(self, gid, gdata, gcomment):
+    def __init__(self, gid, gdata):
         assert self.TYPE
 
         self.gid = gid
         self.gdata = gdata
-        self.gcomment = gcomment
 
         self.tags = []
         self.media = []
@@ -287,12 +306,12 @@ class GalleryPost(GooglePlusPost):
                     'thumbnail_url': nobj['image']['url'],
                     'original_url': nobj.get('fullImage', nobj.get(
                         'embed', {'url': '***FIXME***'}))['url'],
-                    })
+                })
 
         self.content = render_tmpl('gallery.html', {
             'gid': self.gid,
             'attachments': tmpl_data,
-            })
+        })
 
 
 GooglePlusPost.TYPE2CLASS['gallery'] = GalleryPost
@@ -388,6 +407,29 @@ class TextPost(GooglePlusPost):
 
 GooglePlusPost.TYPE2CLASS['text'] = TextPost
 
+
+class GooglePlusComment(object):
+
+    def __init__(self, gdata):
+        self.id = gdata['id']
+        self.content = gdata['object']['content']
+        self.author_name = gdata['actor']['displayName']
+        self.author_id = gdata['actor']['id']
+        self.author_url = gdata['actor']['url']
+        self.author_image = gdata['actor']['image']['url']
+
+    # TODO Comment author must fill out name and
+    #      e-mail setting is currently unchecked
+    # TODO Author details are ignored!
+    def toWordPressComment(self):
+        comment = WordPressComment()
+
+        comment.content = self.content
+        comment.author = self.author_name
+        comment.author_url = self.author_url
+
+        return comment
+
 ###############################################################################
 
 
@@ -417,15 +459,15 @@ def main(argv):
 
     if not FLAGS.dryrun:
         wp = Client(
-             config.WORDPRESS_XMLRPC_URI,
-             config.WORDPRESS_USERNAME,
-             config.WORDPRESS_PASSWORD
+            config.WORDPRESS_XMLRPC_URI,
+            config.WORDPRESS_USERNAME,
+            config.WORDPRESS_PASSWORD
         )
 
     try:
         person = service.people().get(userId=FLAGS.user_id).execute(http)
 
-        request = service.activities().list(
+        post_request = service.activities().list(
             userId=person['id'], collection='public')
 
         i = 0
@@ -442,9 +484,8 @@ def main(argv):
             if len(more_posts) == 0:
                 break
 
-        while request is not None:
-            activities_doc = request.execute()
-
+        while post_request is not None:
+            activities_doc = post_request.execute()
             items = sorted(
                 activities_doc.get('items', []),
                 key=lambda x: x["id"]
@@ -475,7 +516,7 @@ def main(argv):
                 # else, original post
                 else:
                     post = GooglePlusPost.TYPE2CLASS[otype](
-                        item['id'], item, [])
+                        item['id'], item)
                     if FLAGS.verbose:
                         print repr((post.title, post.has_content, otype))
                         print "=" * 80
@@ -486,8 +527,10 @@ def main(argv):
                 found = False
                 for existing_post in existing_posts:
                     for field in existing_post.custom_fields:
-                        if field['key'] == 'google_plus_activity_id' \
-                            and field['value'] == item['id']:
+                        field_key = field['key'] == 'google_plus_activity_id'
+                        field_value = field['value'] == item['id']
+
+                        if field_key and field_value:
                             found = existing_post
 
                 publishable_post = post.toWordPressPost()
@@ -516,20 +559,43 @@ def main(argv):
 
                 # Todo check equality, no point editing if nothing changes
                 if post.title and post.content and found:
-                    if found.content != post.content \
-                        or found.title != post.title:
+                    content_match = found.content == post.content
+                    title_match = found.title == post.title
+                    if not (content_match and title_match):
                         if FLAGS.verbose:
                             print "Updating existing post"
                         wp.call(posts.EditPost(found.id, publishable_post))
 
-                request = service.activities().list_next(
-                              request, activities_doc
-                          )
+                # Comments
+                if item['object']['replies']['totalItems'] > 0:
+                    comments_request = service.comments().list(
+                        maxResults=100,
+                        activityId=item['id']
+                    )
+                    comments_document = comments_request.execute()
+
+                    for comment in comments_document['items']:
+                        publishable_comment = GooglePlusComment(comment).toWordPressComment()
+
+                        # TODO Check post for existing comments nad avoid duplication
+                        if FLAGS.verbose:
+                            print "Publishing new comment to " + found.id
+                            wp.call(NewAnonymousComment(found.id, publishable_comment))
+
+                        # See https://github.com/maxcutler/python-wordpress-xmlrpc/pull/35
+                        if config.WORDPRESS_COMMENT_STYLE == 'anonymous':
+                            wp.call(NewAnonymousComment(found.id, publishable_comment))
+                        else:
+                            wp.call(comments.NewComment(found.id, publishable_comment))
+
+                post_request = service.activities().list_next(
+                    post_request, activities_doc
+                )
             break
 
     except AccessTokenRefreshError:
         print ("The credentials have been revoked or expired, please re-run"
-                 "the application to re-authorize")
+               "the application to re-authorize")
 
 if __name__ == '__main__':
     main(sys.argv)
