@@ -66,6 +66,13 @@ gflags.DEFINE_string(
     'post_id', None, 'Google+ post id for the tool to look at.')
 
 
+import wordpress_xmlrpc
+# Fix wordpress_xmlrpc's __repr__ function to use unicode(self) instead of str(self)
+def WordPressBase__repr__(self):
+    return '<%s: %s>' % (self.__class__.__name__, unicode(self).encode('utf-8'))
+wordpress_xmlrpc.WordPressBase.__repr__ = WordPressBase__repr__
+
+
 # Code to deal with Google+'s OAuth stuff
 ###############################################################################
 CLIENT_SECRETS = 'client_secrets.json'
@@ -311,11 +318,16 @@ class WebPagePost(GooglePlusPost):
             print "Embedly data for '%s'" % webpage['url']
             pprint.pprint(edata)
 
-        if not self.title and edata['title']:
-            self.title = edata['title']
+        if edata:
+            if not self.title and edata['title']:
+                self.title = edata['title']
 
-        has_edata_html = 'html' in edata
-        has_edata_image = 'thumbnail_url' in edata
+            has_edata_html = 'html' in edata
+            has_edata_image = 'thumbnail_url' in edata
+        else:
+            has_edata_html = False
+            has_edata_image = False
+
         has_images = len(images) > 2
         has_preview = has_edata_html or has_edata_image or has_images
 
@@ -450,11 +462,13 @@ def main(argv):
                 # If item['object'] has an id then it's a reshare,
                 if item['object'].get('id', ''):
                     author = item['object']['actor']['displayName']
-                    post = TextPost()
+                    post = TextPost(item['id'], item, [])
                     post.title = '%sReshared %s from %s' % (
                         ['', "%s - " % post.title][len(post.title) > 1],
                         otype, author)
-                    post.content = item['annotation']
+
+                    if 'annotation' in item:
+                        post.content = item['annotation']
                     if FLAGS.verbose:
                         print repr(('Reshare!', post.title, post.content))
 
@@ -497,7 +511,7 @@ def main(argv):
 
                 if post.title and post.content and not found:
                     if FLAGS.verbose:
-                        print "Publishing new post"
+                        print "Publishing new post", repr(publishable_post).decode('utf-8')
                     wp.call(posts.NewPost(publishable_post))
 
                 # Todo check equality, no point editing if nothing changes
