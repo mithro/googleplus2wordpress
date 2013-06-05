@@ -4,3 +4,6 @@ EMBEDLY_KEY = ''
 WORDPRESS_XMLRPC_URI = 'http://mysite.wordpress.com/xmlrpc.php'
 WORDPRESS_USERNAME = 'username'
 WORDPRESS_PASSWORD = 'password'
+# Does not work for wordpress.com - http://en.forums.wordpress.com/topic/xml-rpc-anonymous-comments-wordpresscom?replies=18
+# WORDPRESS_COMMENT_STYLE = 'me'
+WORDPRESS_COMMENT_STYLE = 'anonymous'
