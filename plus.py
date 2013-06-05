@@ -54,6 +54,7 @@ import nltk
 from wordpress_xmlrpc import Client, WordPressPost
 from wordpress_xmlrpc import WordPressComment, AnonymousMethod
 from wordpress_xmlrpc.methods import posts, comments
+import wordpress_xmlrpc
 
 from dateutil.parser import parse as date_parse
 
@@ -69,10 +70,11 @@ gflags.DEFINE_string(
     'post_id', None, 'Google+ post id for the tool to look at.')
 
 
-import wordpress_xmlrpc
-# Fix wordpress_xmlrpc's __repr__ function to use unicode(self) instead of str(self)
+# Fix wordpress_xmlrpc's __repr__ function to use unicode(self) instead of
+# str(self)
 def WordPressBase__repr__(self):
-    return '<%s: %s>' % (self.__class__.__name__, unicode(self).encode('utf-8'))
+    return '<%s: %s>' % (
+        self.__class__.__name__, unicode(self).encode('utf-8'))
 wordpress_xmlrpc.WordPressBase.__repr__ = WordPressBase__repr__
 
 
@@ -505,7 +507,7 @@ def main(argv):
 
                 if FLAGS.verbose:
                     print 'Assessing / Publishing ID: %-040s' % item['id']
-                    
+
                 otype = GooglePlusPost.type(item['object'])
 
                 # If item['object'] has an id then it's a reshare,
@@ -562,7 +564,8 @@ def main(argv):
 
                 if post.title and post.content and not found:
                     if FLAGS.verbose:
-                        print "Publishing new post", repr(publishable_post).decode('utf-8')
+                        print "Publishing new post",
+                        print repr(publishable_post).decode('utf-8')
                     wp.call(posts.NewPost(publishable_post))
 
                 # Todo check equality, no point editing if nothing changes
@@ -584,18 +587,24 @@ def main(argv):
                     comments_document = comments_request.execute()
 
                     for comment in comments_document['items']:
-                        publishable_comment = GooglePlusComment(comment).toWordPressComment()
+                        publishable_comment = GooglePlusComment(
+                            comment).toWordPressComment()
 
-                        # TODO Check post for existing comments nad avoid duplication
+                        # TODO Check post for existing comments nad avoid
+                        # duplication
                         if FLAGS.verbose:
                             print "Publishing new comment to " + found.id
-                            wp.call(NewAnonymousComment(found.id, publishable_comment))
+                            wp.call(NewAnonymousComment(
+                                found.id, publishable_comment))
 
-                        # See https://github.com/maxcutler/python-wordpress-xmlrpc/pull/35
+# See
+# https://github.com/maxcutler/python-wordpress-xmlrpc/pull/35
                         if config.WORDPRESS_COMMENT_STYLE == 'anonymous':
-                            wp.call(NewAnonymousComment(found.id, publishable_comment))
+                            wp.call(NewAnonymousComment(
+                                found.id, publishable_comment))
                         else:
-                            wp.call(comments.NewComment(found.id, publishable_comment))
+                            wp.call(comments.NewComment(
+                                found.id, publishable_comment))
 """
 
                 post_request = service.activities().list_next(
