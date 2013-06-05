@@ -74,8 +74,7 @@ class TestGooglePost(unittest.TestCase):
         """Helper for test equal"""
         gdata = self.load_data(filename)
         gid = ''
-        gcomment = {}
-        post = post_class(gid, gdata, gcomment)
+        post = post_class(gid, gdata)
         post.render()
         result_tmpl = getattr(post, method, 'ERROR')() if method else post.content.strip()
 
@@ -256,7 +255,7 @@ class TestShare(TestGooglePost):
     def test_share(self):
         from plus import TextPost
         gdata = self.load_data('sample_share.json')
-        post = TextPost('', gdata, {})
+        post = TextPost('', gdata)
 
         self.assertTrue(gdata['object'].get('id', '') != '')
         self.assertTrue(gdata['annotation'] != None)
@@ -264,7 +263,7 @@ class TestShare(TestGooglePost):
     def test_linked_share(self):
         from plus import TextPost
         gdata = self.load_data('sample_link_share.json')
-        post = TextPost('', gdata, {})
+        post = TextPost('', gdata)
         post.render()
 
         self.assertIsNotNone(gdata['object']['id'])
@@ -273,7 +272,7 @@ class TestShare(TestGooglePost):
     def test_pic_share(self):
         from plus import TextPost
         gdata = self.load_data('sample_pic_share.json')
-        post = TextPost('', gdata, {})
+        post = TextPost('', gdata)
         post.render()
 
         self.assertIsNotNone(gdata['object']['id'])
@@ -282,7 +281,7 @@ class TestShare(TestGooglePost):
     def test_video_share(self):
         from plus import TextPost
         gdata = self.load_data('sample_video_share.json')
-        post = TextPost('', gdata, {})
+        post = TextPost('', gdata)
         post.render()
 
         self.assertIsNotNone(gdata['object']['id'])
@@ -296,7 +295,7 @@ class TestUtils(TestGooglePost):
         self.mock_embedly([{'title': "From mock"}])
         gdata = self.load_data('sample_webpage.json')
 
-        post = WebPagePost('', gdata, {})
+        post = WebPagePost('', gdata)
         post.render()
         self.assertMultiLineEqual("""From mock""", post.title)
 
