@@ -36,6 +36,7 @@ import config
 
 import gflags
 import httplib2
+import urllib2
 import logging
 import os
 import pprint
@@ -55,6 +56,7 @@ from wordpress_xmlrpc import Client, WordPressPost
 from wordpress_xmlrpc import WordPressComment, AnonymousMethod
 from wordpress_xmlrpc.methods import posts, comments
 import wordpress_xmlrpc
+import xmlrpclib
 
 from dateutil.parser import parse as date_parse
 
@@ -144,6 +146,27 @@ def embed_content(url):
         print e
         return False
 
+def upload_wordpress_photo(url):
+    """ For image in googleplus, download it and upload it to wordpress """
+    #download image from url.
+    try:
+        content = urllib2.urlopen(url)
+        return content.read()
+    except:
+        print("Could not download %(url)s", url)
+        return ""
+
+    extension = url.split(".")[-1]
+    if (extension=='jpg'):
+        xfileType = 'image/jpeg'
+    elif(extension=='png'):
+        xfileType='image/png'
+    elif(extension=='bmp'):
+        xfileType = 'image/bmp'
+
+    content = xmlrpclib.Binary(content)
+    wp.call()
+
 
 # Code to render templates
 ###############################################################################
@@ -203,9 +226,13 @@ class GooglePlusPost(object):
         articles = [
             att for att in gdata.get('attachments', [])
             if att['objectType'] in ('article',)]
+        albums = [
+            att for att in gdata.get('attachments', [])
+            if att['objectType'] in ('album',)
+        ]
 
         # If the post has multiple images/videos we produce a gallery post
-        if len(images) > 1:
+        if len(images) > 1 or albums:
             return "gallery"
 
         # If the post has an article, then we render an article post
@@ -290,6 +317,7 @@ class GooglePlusPost(object):
 
         post.date = self.published
         post.date_modified = self.updated
+        post.comment_status = True
 
         post.post_status = 'publish'
         return post
@@ -300,7 +328,8 @@ class GalleryPost(GooglePlusPost):
 
     def render(self):
         obj = self.gdata['object']['attachments']
-
+        if len(obj) <= 1:
+            obj = obj[0]['thumbnails']
         tmpl_data = []
         for nobj in obj:
             embed_info = embed_content(nobj['url'])
@@ -322,6 +351,7 @@ class GalleryPost(GooglePlusPost):
             'gid': self.gid,
             'attachments': tmpl_data,
         })
+        self.content += self.gdata['object']['content']
 
 
 GooglePlusPost.TYPE2CLASS['gallery'] = GalleryPost
@@ -360,7 +390,7 @@ class WebPagePost(GooglePlusPost):
         has_images = len(images) > 2
         has_preview = has_edata_html or has_edata_image or has_images
 
-        self.content = render_tmpl('webpage.html', locals())
+        self.content = render_tmpl('webpage.html', locals()) + self.gdata['object']['content']
 
 
 GooglePlusPost.TYPE2CLASS['web page'] = WebPagePost
@@ -370,6 +400,7 @@ class PhotoPost(GooglePlusPost):
     TYPE = 'photo'
 
     def render(self):
+        main_content = self.gdata['object']['content']
         obj = self.gdata['object']['attachments'][0]
 
         try:
@@ -392,6 +423,7 @@ class PhotoPost(GooglePlusPost):
 
         self.content = """
 <img class="alignnone" src="%(preview_url)s" alt="%(content)s">
+%(main_content)s
 """ % locals()
 
 
@@ -402,8 +434,13 @@ class VideoPost(GooglePlusPost):
     TYPE = 'video'
 
     def render(self):
+        main_content = self.gdata['object']['content']
         obj = self.gdata['object']['attachments'][0]
-        self.content = """%(url)s""" % {'url': obj['url']}
+        self.content = """
+<iframe width="420" height="345"
+src="%(url)s">
+</iframe> <br /> %(main_content)s
+""" % {'url': obj['url'], 'main_content': main_content}
 
 
 GooglePlusPost.TYPE2CLASS['video'] = VideoPost
@@ -413,6 +450,7 @@ class TextPost(GooglePlusPost):
     TYPE = 'text'
 
     def render(self):
+        self.content = self.gdata['object']['content']
         pass
 
 GooglePlusPost.TYPE2CLASS['text'] = TextPost
@@ -437,11 +475,18 @@ class GooglePlusComment(object):
         comment.content = self.content
         comment.author = self.author_name
         comment.author_url = self.author_url
+        comment.author_image = self.author_image
 
         return comment
 
 ###############################################################################
 
+if not FLAGS.dryrun:
+        wp = Client(
+            config.WORDPRESS_XMLRPC_URI,
+            config.WORDPRESS_USERNAME,
+            config.WORDPRESS_PASSWORD
+        )
 
 def main(argv):
     # Let the gflags module process the command-line arguments
@@ -467,21 +512,18 @@ def main(argv):
 
     service = build("plus", "v1", http=http)
 
-    if not FLAGS.dryrun:
-        wp = Client(
-            config.WORDPRESS_XMLRPC_URI,
-            config.WORDPRESS_USERNAME,
-            config.WORDPRESS_PASSWORD
-        )
 
     try:
+        #get G+ people information
         person = service.people().get(userId=FLAGS.user_id).execute(http)
 
+        #get posted of a person.
         post_request = service.activities().list(
             userId=person['id'], collection='public')
 
         i = 0
         n = 100
+        #get all post in wordpress
         existing_posts = more_posts = []
         while True and not FLAGS.dryrun:
             more_posts = wp.call(posts.GetPosts({"number": n, 'offset': i}))
@@ -502,6 +544,7 @@ def main(argv):
             )
 
             for item in items:
+                #ignore posts with posted id is not equal input post_id
                 if FLAGS.post_id and FLAGS.post_id != item['id']:
                     continue
 
@@ -542,6 +585,7 @@ def main(argv):
 
                         if field_key and field_value:
                             found = existing_post
+                            post_id = found.id
 
                 publishable_post = post.toWordPressPost()
                 # TODO Do we actually support anything which isn't an activity?
@@ -566,7 +610,7 @@ def main(argv):
                     if FLAGS.verbose:
                         print "Publishing new post",
                         print repr(publishable_post).decode('utf-8')
-                    wp.call(posts.NewPost(publishable_post))
+                    post_id = wp.call(posts.NewPost(publishable_post))
 
                 # Todo check equality, no point editing if nothing changes
                 if post.title and post.content and found:
@@ -577,9 +621,9 @@ def main(argv):
                             print "Updating existing post"
                         wp.call(posts.EditPost(found.id, publishable_post))
 
+
                 # Comments
-                """
-                if item['object']['replies']['totalItems'] > 0:
+                if item['object']['replies']['totalItems'] > 0 and found:
                     comments_request = service.comments().list(
                         maxResults=100,
                         activityId=item['id']
@@ -592,20 +636,20 @@ def main(argv):
 
                         # TODO Check post for existing comments nad avoid
                         # duplication
+
+                        post_id = found.id
                         if FLAGS.verbose:
-                            print "Publishing new comment to " + found.id
-                            wp.call(NewAnonymousComment(
-                                found.id, publishable_comment))
+                            print "Publishing new comment to " + post_id
+                            #wp.call(NewAnonymousComment(post_id, publishable_comment))
 
 # See
 # https://github.com/maxcutler/python-wordpress-xmlrpc/pull/35
                         if config.WORDPRESS_COMMENT_STYLE == 'anonymous':
-                            wp.call(NewAnonymousComment(
+                            wp.call(comments.NewAnonymousComment(
                                 found.id, publishable_comment))
                         else:
                             wp.call(comments.NewComment(
                                 found.id, publishable_comment))
-"""
 
                 post_request = service.activities().list_next(
                     post_request, activities_doc
