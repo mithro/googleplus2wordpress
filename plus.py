@@ -33,6 +33,9 @@ by running:
 __author__ = "tansell@google.com (Tim 'mithro' Ansell)"
 
 import config
+import base64
+from datetime import date, time
+import mimetypes
 
 import gflags
 import httplib2
@@ -54,7 +57,8 @@ import html2text
 import nltk
 from wordpress_xmlrpc import Client, WordPressPost
 from wordpress_xmlrpc import WordPressComment, AnonymousMethod
-from wordpress_xmlrpc.methods import posts, comments
+from wordpress_xmlrpc.methods import posts, comments, media
+from wordpress_xmlrpc.compat import xmlrpc_client
 import wordpress_xmlrpc
 import xmlrpclib
 
@@ -146,26 +150,21 @@ def embed_content(url):
         print e
         return False
 
-def upload_wordpress_photo(url):
+def upload_wordpress_photo(url, name):
     """ For image in googleplus, download it and upload it to wordpress """
     #download image from url.
     try:
-        content = urllib2.urlopen(url)
-        return content.read()
+        content = urllib2.urlopen(url).read()
     except:
         print("Could not download %(url)s", url)
         return ""
 
-    extension = url.split(".")[-1]
-    if (extension=='jpg'):
-        xfileType = 'image/jpeg'
-    elif(extension=='png'):
-        xfileType='image/png'
-    elif(extension=='bmp'):
-        xfileType = 'image/bmp'
-
-    content = xmlrpclib.Binary(content)
-    wp.call()
+    data = {}
+    data['name'] = name
+    data['type'] = mimetypes.guess_type(url) or mimetypes.guess_type(url)[0]
+    data['bits'] = xmlrpc_client.Binary(content)
+    result = wp.call(media.UploadFile(data))
+    return result
 
 
 # Code to render templates
@@ -332,17 +331,20 @@ class GalleryPost(GooglePlusPost):
             obj = obj[0]['thumbnails']
         tmpl_data = []
         for nobj in obj:
+            #new_url = upload_wordpress_photo(nobj['url'], nobj['name'])
             embed_info = embed_content(nobj['url'])
             if embed_info:
                 embed_info['description'] = embed_info.get(
                     'description', embed_info['title'])
                 embed_info['src'] = 'embedly'
+                embed_info['url'] = upload_wordpress_photo(embed_info['url'], embed_info['title'])['url']
+                embed_info['thumbnail_url'] = upload_wordpress_photo(embed_info['thumbnail_url'], embed_info['title'])['url']
 
                 tmpl_data.append(embed_info)
             else:
                 tmpl_data.append({
                     'src': 'g+',
-                    'thumbnail_url': nobj['image']['url'],
+                    'thumbnail_url': upload_wordpress_photo(nobj['image']['url'], nobj['title'])['url'],
                     'original_url': nobj.get('fullImage', nobj.get(
                         'embed', {'url': '***FIXME***'}))['url'],
                 })
@@ -404,6 +406,7 @@ class PhotoPost(GooglePlusPost):
         obj = self.gdata['object']['attachments'][0]
 
         try:
+
             preview_url = obj['image']['url']
             full_url = obj['fullImage']['url']
             content = obj['fullImage'].get('content', '')
@@ -417,8 +420,8 @@ class PhotoPost(GooglePlusPost):
             if not self.title and edata.get('title', None):
                 self.title = edata['title']
 
-            preview_url = edata.get('thumbnail_url', obj['url'])
-            full_url = obj['url']
+            preview_url = upload_wordpress_photo(edata.get('thumbnail_url', obj['url']), edata.get('name'))['url']
+            full_url = upload_wordpress_photo(obj['url'], edata.get('name'))['url']
             content = edata.get('description', '')
 
         self.content = """
@@ -437,10 +440,8 @@ class VideoPost(GooglePlusPost):
         main_content = self.gdata['object']['content']
         obj = self.gdata['object']['attachments'][0]
         self.content = """
-<iframe width="420" height="345"
-src="%(url)s">
-</iframe> <br /> %(main_content)s
-""" % {'url': obj['url'], 'main_content': main_content}
+<iframe width="420" height="345" src="%(url)s"> </iframe> <br /> %(main_content)s
+""" % {'url': obj['url'].strip(), 'main_content': main_content}
 
 
 GooglePlusPost.TYPE2CLASS['video'] = VideoPost
