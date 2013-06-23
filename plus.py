@@ -327,6 +327,7 @@ class GalleryPost(GooglePlusPost):
 
     def render(self):
         obj = self.gdata['object']['attachments']
+        #in case of the gallery. All pictures will be in obj[0]['thumbnails']
         if len(obj) <= 1:
             obj = obj[0]['thumbnails']
         tmpl_data = []
@@ -466,6 +467,7 @@ class GooglePlusComment(object):
         self.author_id = gdata['actor']['id']
         self.author_url = gdata['actor']['url']
         self.author_image = gdata['actor']['image']['url']
+        self.custom_fields = {'key':'google_plus_comment_avatar', 'value':gdata['actor']['image']['url']}
 
     # TODO Comment author must fill out name and
     #      e-mail setting is currently unchecked
@@ -477,17 +479,16 @@ class GooglePlusComment(object):
         comment.author = self.author_name
         comment.author_url = self.author_url
         comment.author_image = self.author_image
-
+        comment.custom_fields = self.custom_fields
         return comment
 
 ###############################################################################
-
 if not FLAGS.dryrun:
-        wp = Client(
-            config.WORDPRESS_XMLRPC_URI,
-            config.WORDPRESS_USERNAME,
-            config.WORDPRESS_PASSWORD
-        )
+    wp = Client(
+        config.WORDPRESS_XMLRPC_URI,
+        config.WORDPRESS_USERNAME,
+        config.WORDPRESS_PASSWORD
+    )
 
 def main(argv):
     # Let the gflags module process the command-line arguments
@@ -512,7 +513,6 @@ def main(argv):
     http = credentials.authorize(http)
 
     service = build("plus", "v1", http=http)
-
 
     try:
         #get G+ people information
