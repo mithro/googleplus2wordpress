@@ -354,7 +354,6 @@ class GalleryPost(GooglePlusPost):
             'gid': self.gid,
             'attachments': tmpl_data,
         })
-        self.content += self.gdata['object']['content']
 
 
 GooglePlusPost.TYPE2CLASS['gallery'] = GalleryPost
@@ -393,7 +392,7 @@ class WebPagePost(GooglePlusPost):
         has_images = len(images) > 2
         has_preview = has_edata_html or has_edata_image or has_images
 
-        self.content = render_tmpl('webpage.html', locals()) + self.gdata['object']['content']
+        self.content = render_tmpl('webpage.html', locals())
 
 
 GooglePlusPost.TYPE2CLASS['web page'] = WebPagePost
@@ -441,8 +440,9 @@ class VideoPost(GooglePlusPost):
         main_content = self.gdata['object']['content']
         obj = self.gdata['object']['attachments'][0]
         self.content = """
-<iframe width="420" height="345" src="%(url)s"> </iframe> <br /> %(main_content)s
-""" % {'url': obj['url'].strip(), 'main_content': main_content}
+%(main_content)s
+%(embed)s
+""" % {'main_content': main_content, 'embed':embed_content(obj['url'])['html']}
 
 
 GooglePlusPost.TYPE2CLASS['video'] = VideoPost
@@ -479,7 +479,7 @@ class GooglePlusComment(object):
         comment.author = self.author_name
         comment.author_url = self.author_url
         comment.author_image = self.author_image
-        comment.custom_fields = self.custom_fields
+        #comment.custom_fields = self.custom_fields
         return comment
 
 ###############################################################################
